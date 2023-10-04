@@ -1,0 +1,296 @@
+<style>
+  header-drawer {
+    justify-self: start;
+    /* margin-left: -1.2rem; */
+  }
+
+  @media screen and (min-width: 990px) {
+    header-drawer {
+      display: none;
+    }
+  }
+
+  .menu-drawer-container {
+    display: flex;
+  }
+
+  .list-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .list-menu--inline {
+    display: inline-flex;
+    /* flex-wrap: wrap; */
+  }
+
+  .header__inline-menu .list-menu--inline li {
+    display: flex;
+    align-items: center;
+    border: 1px solid black;
+    margin-right: 10px;
+    text-transform: uppercase;
+    grid-area: desktop-menu;
+  }
+
+  summary.list-menu__item {
+    padding-right: 2.7rem;
+  }
+
+  .list-menu__item {
+    display: flex;
+    align-items: center;
+    line-height: calc(1 + 0.3 / var(--font-body-scale));
+  }
+
+  .list-menu__item--link {
+    text-decoration: none;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    line-height: calc(1 + 0.8 / var(--font-body-scale));
+  }
+
+  .product-type-menu-wrapper {
+    position: relative;
+    /* padding: 0 10px; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 0;
+  }
+
+  .product-type-menu-wrapper__collection-grid {
+    flex-direction: row-reverse;
+  }
+
+  .product-type-menu-wrapper #main-collection-filters {
+    left: 10px;
+  }
+
+  .product-type-menu .ul .li:last-of-type {
+    padding-right: 10px;
+  }
+
+  .product-type-menu .ul .li:active {
+    text-decoration: underline;
+  }
+
+  #main-collection-filters::before {
+    width: 30px;
+    content: '';
+    position: absolute;
+    right: 40px;
+    background: linear-gradient(to right, transparent, rgb(255, 255, 255));
+    height: 30px;
+    display: none;
+  }
+
+  /* .product-type-menu-wrapper__collection-grid {
+    padding-right: 10px;
+  } */
+
+  /* .product-type-menu-wrapper__collection-grid nav {
+    margin-right: 10px;
+  } */
+
+  @media screen and (min-width: 640px) {
+    .fade-to-white-overlay {
+      display: none;
+    }
+  }
+
+  .shopify-section.product-type-menu {
+    position: sticky;
+    z-index: 3;
+    top: 50px;
+    background-color: white;
+    border-bottom: 1px solid black;
+    margin-top: 0;
+  }
+
+  .shopify-section.product-type-menu .product-type-menu-wrapper {
+    margin: 0;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .list-menu__item--link {
+      padding-bottom: 0.5rem;
+      padding-top: 0.5rem;
+    }
+
+    .product-type-menu-wrapper {
+      display: flex;
+      justify-content: center;
+      /* align-items: center; */
+    }
+  }
+</style>
+
+{%- if section.settings.product_type_menu != blank -%}
+  <div class="page-width product-type-menu-wrapper product-type-menu-wrapper  {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}__collection-grid  {%- endif -%}">
+    <!--
+      {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
+          {{ 'component-facets.css' | asset_url | stylesheet_tag }}
+          <script src="{{ 'facets.js' | asset_url }}" defer="defer"></script>
+
+          <div class="" id="main-collection-filters" data-id="{{ section.id }}">
+            {% render 'facets', results: collection, enable_filtering: section.settings.enable_filtering, enable_sorting: section.settings.enable_sorting, collapse_on_larger_devices: section.settings.collapse_on_larger_devices %}
+          </div>
+      {%- endif -%}
+    -->
+
+    <nav class="product-type-menu {% if section.settings.enable_filtering or section.settings.enable_sorting %}  collection-page-nav {% endif %}">
+      <ul class="list-menu list-menu--inline" role="list">
+        {%- for link in section.settings.product_type_menu.links -%}
+          <li>
+            {%- if link.links != blank -%}
+              <details-disclosure>
+                <details id="Details-HeaderMenu-{{ forloop.index }}">
+                  <summary class="header__menu-item list-menu__item link focus-inset">
+                    <span
+                      {%- if link.current -%}
+                        {%- unless link.title == 'New' -%}class="header__active-menu-item" {% endunless %}
+                      {% endif %}
+                    >
+                      {{- link.title | escape -}}
+                    </span>
+                    <!-- {% render 'icon-caret' %} -->
+                  </summary>
+                  <ul
+                    id="HeaderMenu-MenuList-{{ forloop.index }}"
+                    class="header__submenu list-menu list-menu--disclosure caption-large motion-reduce"
+                    role="list"
+                    tabindex="-1"
+                  >
+                    {%- for childlink in link.links -%}
+                      <li>
+                        {%- if childlink.links == blank -%}
+                          <a
+                            href="{{ childlink.url }}"
+                            class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} list-menu__item--active{% endif %}"
+                            {% if childlink.current %}
+                              aria-current="page"
+                            {% endif %}
+                          >
+                            {{ childlink.title | escape }}
+                          </a>
+                        {%- else -%}
+                          <details id="Details-HeaderSubMenu-{{ forloop.index }}">
+                            <summary class="header__menu-item link link--text list-menu__item focus-inset caption-large">
+                              {{ childlink.title | escape }}
+                              <!-- {% render 'icon-caret' %} -->
+                            </summary>
+                            <ul
+                              id="HeaderMenu-SubMenuList-{{ forloop.index }}"
+                              class="header__submenu list-menu motion-reduce"
+                            >
+                              {%- for grandchildlink in childlink.links -%}
+                                <li>
+                                  <a
+                                    href="{{ grandchildlink.url }}"
+                                    class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+                                    {% if grandchildlink.current %}
+                                      aria-current="page"
+                                    {% endif %}
+                                  >
+                                    {{ grandchildlink.title | escape }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </details>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              </details-disclosure>
+            {%- else -%}
+              {%- comment -%} Capture the content for header containing the tracking data {%- endcomment -%}
+              {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+
+              {% comment %} Use string splitting to pull the value from content_for_header and apply some string clean up {% endcomment %}
+              {%- assign pageUrlWithoutHost = contentForQuerystring
+                | split: '"pageurl":"'
+                | last
+                | split: '"'
+                | first
+                | split: '.myshopify.com'
+                | last
+                | replace: '\/', '/'
+                | replace: '%20', ' '
+                | replace: '\u0026', '&'
+              -%}
+
+              <a
+                href="{{ link.url }}"
+                class="header__menu-item header__menu-item list-menu__item link link--text focus-inset"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+              >
+                <span
+                  {% if link.current %}
+                    {% unless pageUrlWithoutHost contains '/collections/accessories?sort_by=created-descending' %}
+                      class="header__active-menu-item"
+                    {% endunless %}
+                  {% endif %}
+
+                  {% if link.current == false
+                    and link.title == 'New'
+                    and pageUrlWithoutHost contains '/collections/accessories?sort_by=created-descending'
+                  %}
+                    class="header__active-menu-item"
+                  {% endif %}
+                >
+                  {{ link.title | escape }}
+                </span>
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product Type Menu",
+  "tag": "section",
+  "class": "product-type-menu",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "product_type_menu",
+      "default": "main-menu",
+      "label": "Product Type Menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable Filtering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Enable Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_on_larger_devices",
+      "default": false,
+      "label": "Collapse on Larger Devices"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Type Menu"
+    }
+  ]
+}
+{% endschema %}

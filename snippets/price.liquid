@@ -1,0 +1,237 @@
+{% comment %}
+  Renders a list of product's price (regular, sale)
+
+  Accepts:
+  - product: {Object} Product Liquid object (optional)
+  - use_variant: {Boolean} Renders selected or first variant price instead of overall product pricing (optional)
+  - show_badges: {Boolean} Renders 'Sale' and 'Sold Out' tags if the product matches the condition (optional)
+  - price_class: {String} Adds a price class to the price element (optional)
+  - hide_currency_iso_code: {Boolean} Hides iso code (optional)
+
+  Usage:
+  {% render 'price', product: product %}
+{% endcomment %}
+
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 1999
+  assign available = target.available | default: false
+  assign money_price = price | money
+
+  if settings.currency_code_enabled
+    assign money_price = price | money_without_trailing_zeros
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+
+  # Low stock
+  assign is_low_stock = false
+  if target == product.selected_or_first_available_variant 
+    if product.selected_or_first_available_variant.inventory_quantity < settings.low_stock_threshold and product.selected_or_first_available_variant.inventory_quantity > 0
+      assign is_low_stock = true
+    endif
+  endif 
+-%}
+
+{%- if settings.sitewide_discount_enabled != true or product.handle contains 'gift-card' -%}
+  {% comment %} To Delete: Only for Development {% endcomment %}
+  {% comment %} <div style="color: red;">
+    {%- for variant in product.variants -%}
+      Variant: {{ variant.title }}, {{ variant.inventory_quantity }}<br>
+    {%- endfor -%}
+  </div> {% endcomment %}
+  {% comment %} To Delete: Only for Development - END {% endcomment %}
+  <div
+    class="
+      price
+      {%- if price_class %} {{ price_class }}{% endif -%}      
+      {%- if available == false %}
+        price--sold-out
+      {%- else %}
+        {% comment %} Low Stock {% endcomment %}
+        {%- if is_low_stock %}
+          price--low-stock
+        {%- endif -%}
+        {% comment %} Sale Logic {% endcomment %}
+        {%- if product.tags contains 'Final Sale' %}
+          price--on-final-sale
+        {%- elsif  compare_at_price > price or product.tags contains 'Sale' %}
+          price--on-sale
+        {%- endif -%}
+        {% comment %} Bestseller/Collab {% endcomment %}
+        {%- if product.metafields.junip.rating_count < 3 %}
+          price--is-new
+        {%- elsif product.tags contains 'Bestseller' %}
+          price--is-bestseller
+        {%- elsif product.tags contains 'Collaboration' %}
+          price--is-collaboration
+        {%- endif -%}
+      {%- endif -%}
+      {%- if product.price_varies == false and product.compare_at_price_varies %}
+        price--no-compare
+      {%- endif -%}
+      {%- if show_badges %}
+        price--show-badge
+      {%- endif -%}
+    "
+  >
+    <div>
+      {%- comment -%}
+        Explanation of description list:
+          - div.price__regular: Displayed when there are no variants on sale
+          - div.price__sale: Displayed when a variant is a sale
+      {%- endcomment -%}
+      <div class="price__regular">
+        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+        <span class="price-item price-item--regular">
+          {% if cart.currency.iso_code == 'USD'
+            or cart.currency.iso_code == 'CAD'
+            or cart.currency.iso_code == 'EUR'
+            or cart.currency.iso_code == 'AUD'
+          %}
+            {{ cart.currency.symbol -}}
+            {{- price | money_without_currency | ceil }}
+            {%- unless hide_currency_iso_code -%}{{ cart.currency.iso_code }}{%- endunless -%}
+          {% else %}
+            {{ price | money_without_trailing_zeros }}
+            {%- unless hide_currency_iso_code -%}{{ cart.currency.iso_code }}{%- endunless -%}
+          {% endif %}
+        </span>
+      </div>
+      <div class="price__sale">
+        {%- unless product.price_varies == false and product.compare_at_price_varies %}
+          <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+          <span>
+            <s class="price-item price-item--regular">
+              {% if settings.currency_code_enabled %}
+                {{ compare_at_price | money_without_trailing_zeros }}
+              {% else %}
+                {{ compare_at_price | money_without_trailing_zeros }}
+              {% endif %}
+            </s>
+          </span>
+        {%- endunless -%}
+        <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
+        <span class="price-item price-item--sale price-item--last">
+          {% if cart.currency.iso_code == 'USD'
+            or cart.currency.iso_code == 'CAD'
+            or cart.currency.iso_code == 'EUR'
+            or cart.currency.iso_code == 'AUD'
+          %}
+            {{ cart.currency.symbol -}}
+            {{- price | money_without_currency | ceil }}
+            {%- unless hide_currency_iso_code -%}{{ cart.currency.iso_code }}{%- endunless -%}
+          {% else %}
+            {{ price | money_without_trailing_zeros }}
+            {%- unless hide_currency_iso_code -%}{{ cart.currency.iso_code }}{%- endunless -%}
+          {% endif %}
+        </span>
+      </div>
+      <small class="unit-price caption{% if product.selected_or_first_available_variant.unit_price_measurement == nil %} hidden{% endif %}">
+        <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+        <span class="price-item price-item--last">
+          <span>{{- product.selected_or_first_available_variant.unit_price | money -}}</span>
+          <span aria-hidden="true">/</span>
+          <span class="visually-hidden">&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span>
+          <span>
+            {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+              {{- product.selected_or_first_available_variant.unit_price_measurement.reference_value -}}
+            {%- endif -%}
+            {{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}
+          </span>
+        </span>
+      </small>
+    </div>
+    {% comment %} These are different sets of badges that are specific to price. Not the ones for the card. {% endcomment %}
+    {%- if show_badges -%}
+      <span class="badge price__badge-sale">
+        {{ 'products.product.on_sale' | t }}
+      </span>
+
+      <span class="badge price__badge-final-sale">
+        {{ 'products.product.on_final_sale' | t }}
+      </span>
+
+      <span class="badge price__badge-sold-out">
+        {%- if product.metafields.custom.enable_presale == true
+          and product.metafields.custom.presale_message != blank
+        -%}
+          {{- product.metafields.custom.presale_message -}}
+        {% else %}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </span>
+
+      <span class="badge price__badge-new">
+        {{ 'products.product.new' | t }}
+      </span>
+
+      <span class="badge price__badge-bestseller">
+        {{ 'products.product.bestseller' | t }}
+      </span>
+
+      <span class="badge price__badge-collaboration">
+        {{ 'products.product.collaboration' | t }}
+      </span>
+
+      <span class="badge price__badge-low-stock">
+        {%- if settings.show_limited_stock_quantity and target == product.selected_or_first_available_variant -%}
+          {{ 'products.product.low_stock_quantity' | t: quantity: target.inventory_quantity }}
+        {%- else -%}
+          {{ 'products.product.low_stock' | t }}
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+  </div>
+{%- else -%}
+  {%- liquid
+    assign global_discount_remainder = 100 | minus: settings.sitewide_discount_pricing_percentage | times: 0.01
+    assign display_compare_at_price = price
+    if compare_at_price > price and compare_at_price != null and compare_at_price != 0
+      assign display_compare_at_price = compare_at_price
+    endif
+  -%}
+
+  <div class="price price--on-sale ">
+    <div class="price__sale">
+      <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.regular_price' | t }}</span>
+      <span class="price-item price-item--regular">
+        {% if cart.currency.iso_code == 'USD'
+          or cart.currency.iso_code == 'CAD'
+          or cart.currency.iso_code == 'EUR'
+          or cart.currency.iso_code == 'AUD'
+        %}
+          {{ cart.currency.symbol -}}
+          {{- display_compare_at_price | money_without_currency | ceil }}
+        {% else %}
+          {{ display_compare_at_price | money_without_trailing_zeros }}
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="price__sale">
+      <span class="price-item price-item--sale price-item--last">
+        {% if cart.currency.iso_code == 'USD'
+          or cart.currency.iso_code == 'CAD'
+          or cart.currency.iso_code == 'EUR'
+          or cart.currency.iso_code == 'AUD'
+        %}
+          {% comment %} We need the times filter because without them it will only round to the nearest cent {% endcomment %}
+          {{ price | times: global_discount_remainder | times: 0.01 | ceil | times: 100  | money_without_trailing_zeros }}
+          {%- unless hide_currency_iso_code -%}{{ cart.currency.iso_code }}{%- endunless -%}
+        {% else %}
+          {{ price | times: global_discount_remainder | money_without_trailing_zeros }}
+          {%- unless hide_currency_iso_code -%}{{ cart.currency.iso_code }}{%- endunless -%}
+        {% endif %}
+      </span>
+    </div>
+  </div>
+{% endif %}

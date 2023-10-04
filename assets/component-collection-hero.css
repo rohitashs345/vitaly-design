@@ -1,0 +1,54 @@
+.section.section--collection-hero {
+  /* Menu bar has a margin-bottom that is global. This is a quickfix. */
+  margin-top: -10px;
+}
+
+.collection-hero {
+  position: relative;
+  padding: 30px 10px;
+}
+
+.collection-hero__text-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px
+}
+
+.collection-hero__title {
+  margin: 0;
+  font-size: 3rem;
+}
+
+.collection-hero__title + .collection-hero__description {
+  font-size: 1.6rem;
+  line-height: calc(1 + 0.5 / var(--font-body-scale));
+}
+
+@media screen and (min-width: 750px) {
+  .collection-hero__title {
+    font-size: 4rem;
+  }
+
+  .collection-hero__title + .collection-hero__description {
+    font-size: 1.8rem;
+  }
+
+  .collection-hero__description {
+    max-width: 66.67%;
+  }
+}
+
+.collection-hero__overlay,
+.collection-hero__image-container {
+  position: absolute;
+  top:0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+div:empty.collection-hero__overlay {
+  display: block;
+}
+

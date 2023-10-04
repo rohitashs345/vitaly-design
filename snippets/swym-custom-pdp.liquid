@@ -1,0 +1,27 @@
+<script defer>
+  function swymCallbackFn(swat) {
+    // your API calls go here
+    function lazyInit() {
+      swat.initializeActionButtons('Body');
+    }
+
+    document.addEventListener('change', function (e) {
+      let newVariantId = Number(window.location.href.split('variant=')[1]);
+      const swymPdp = document.getElementById('swym-custom-pdp');
+      if (swymPdp) {
+        swymPdp.setAttribute('data-variant-id', newVariantId);
+        swat.initializeActionButtons('Body');
+      }
+    });
+
+    document.addEventListener('input', () => {
+      setTimeout(lazyInit, 2000);
+    });
+  }
+
+  if (!window.SwymCallbacks) {
+    window.SwymCallbacks = [];
+  }
+
+  window.SwymCallbacks.push(swymCallbackFn);
+</script>

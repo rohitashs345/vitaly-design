@@ -1,0 +1,84 @@
+<!-- Stamped - Begin Main Widget -->
+<div
+  id="stamped-main-widget"
+  data-product-id="{{ product.id }}"
+  data-name="{{ product.title | escape }}"
+  data-url="{{ shop.url }}{{ product.url }}"
+  data-image-url="{{ product.featured_image | product_img_url: "large" |replace: '?', '%3F' | replace: '&','%26'}}"
+  data-description="{{ product.description | escape }}"
+  data-product-sku="{{product.handle}}"
+  data-product-title="{{product.title}}"
+  data-product-type="{{product.type}}"
+>
+  {{ product.metafields.stamped.reviews }}
+</div>
+<!-- Stamped - End Main Widget -->
+
+<style>
+  #stamped-main-widget {
+    margin: 0 !important;
+    background-color: rgba(var(--color-base-accent-1));
+    padding: 0 10px;
+  }
+  .stamped-reviews-filter,
+  .stamped-summary-ratings {
+    display: none !important;
+  }
+
+  .stamped-summary-text-1,
+  .stamped-summary-actions-newreview,
+  .stamped-tab-container,
+  .stamped-location-flag,
+  .stamped-verified-badge {
+    display: none;
+  }
+
+  .stamped-header-title,
+  .stamped-header,
+  .stamped-content {
+    color: white;
+  }
+  .stamped-fa-star {
+    color: white !important;
+  }
+  .stamped-pagination li a {
+    color: white;
+  }
+  .stamped-review {
+    border: 1px solid white !important;
+    padding: 15px;
+  }
+
+  .stamped-container[data-count='0'] {
+    display: none;
+  }
+  [data-version='2'] .stamped-summary-caption {
+    display: none !important;
+  }
+  div[data-widget-style='two-columns'] .stamped-review:nth-child(2) {
+    border-top: 1px solid white !important;
+  }
+  .stamped-header-title {
+    margin-bottom: 5px;
+  }
+
+  @media screen and (max-width: 480px) {
+    .stamped-review:last-of-type {
+      margin-bottom: 30px !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Stamped Reviews Section",
+  "tag": "section",
+  "class": "id-stamped-reviews",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Stamped Reviews"
+    }
+  ]
+}
+{% endschema %}

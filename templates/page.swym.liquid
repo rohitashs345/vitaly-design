@@ -1,0 +1,85 @@
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'swym-wishlist-page.js' | asset_url }}" async="async"></script>
+
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-grid.css' | asset_url | stylesheet_tag }}
+{{ 'template-page-wishlist.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  /* wishlist-card:hover .wishlist-card__secondary-image {
+    z-index: 2;
+  } */
+  .wishlist__customer-not-signed-in-state {
+    --wishlist-margin: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    width: calc(100% - (var(--wishlist-margin) * 2));
+    padding: 25px;
+    margin: 0 var(--wishlist-margin);
+  }
+
+  .wishlist__customer-not-signed-in-text a {
+    color: inherit;
+  }
+{%- endstyle -%}
+
+<sfl-wrapper class="wishlist-page__tab-component">
+  <ul class="wishlist-page__tab-buttons">
+    <li
+      class="wishlist-page__tab-button list-unstyled active"
+      data-tab="button"
+    >
+      Wishlist
+    </li>
+    <li
+      class="wishlist-page__tab-button list-unstyled"
+      data-tab="button"
+      data-sfl-fetch-trigger
+    >
+      Saved For Later
+    </li>
+  </ul>
+
+  <div class="wishlist-page__tab-content active" data-tab="content">
+    {%- unless customer -%}
+      <div class="wishlist__customer-not-signed-in-state">
+        <div class="wishlist__customer-not-signed-in-text">{{ 'Sign in' | link_to: routes.account_login_url }} or {{ 'create an account' | link_to: routes.account_register_url }} to save your wishlist!</div>
+      </div>
+    {%- endunless -%}
+    <div class="wishlist__empty-state" data-loading-wishlist>
+      <div class="wishlist__empty-state-title h2">Loading...</div>
+    </div>
+    <div class="wishlist__empty-state hidden" data-empty-wishlist>
+      <h2 class="wishlist__empty-state-title">Love it? Add it to your wishlist!</h2>
+      <p class="wishlist__empty-state-description">
+        Your wishlist allows you to keep track of all of your favorites and shopping activity whether you're on your
+        computer, phone, or tablet. You won't have to waste time searching all over again for that item you loved on
+        your phone the other day - it's all here in one place!
+      </p>
+      {% comment %} <button onclick="redicrectToCollections()" class="wishlist__empty-state-button">Continue Shopping</button> {% endcomment %}
+    </div>
+    {% comment %} <div class="wishlist__container" data-render-wishlist></div> {% endcomment %}
+    <page-wishlist class="wishlist__container page-width">
+      <ul id="product-grid" class="grid product-grid grid--2-col grid--3-col-tablet grid--4-col-desktop" data-render-wishlist></ul>
+    </page-wishlist>
+  </div>
+
+  <div class="wishlist-page__tab-content" data-tab="content">
+    <div class="wishlist__empty-state hidden" data-empty-sfl>
+      <h2 class="wishlist__empty-state-title">Save your favorites for later!</h2>
+      <p class="wishlist__empty-state-description">
+        Your Save For Later list allows you to keep track of all of your favorites and shopping activity whether you're on your
+        computer, phone, or tablet. You won't have to waste time searching all over again for that item you loved on
+        your phone the other day - it's all here in one place!
+      </p>
+      {% comment %} <button onclick="redicrectToCollections()" class="wishlist__empty-state-button">Continue Shopping</button> {% endcomment %}
+    </div>
+    <page-sfl class="sfl__container page-width">
+      <ul class="grid product-grid grid--2-col grid--3-col-tablet grid--4-col-desktop" data-render-sfl></ul>
+    </page-sfl>
+  </div>
+</sfl-wrapper>
+

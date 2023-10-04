@@ -1,0 +1,145 @@
+/* 
+  Swym Wishlist Page Styles
+*/
+
+.sfl__container,
+.wishlist__container {
+  padding: 10px;
+  display: block;
+}
+
+.wishlist-page__tab-component {
+  width: 100%;
+}
+
+.wishlist-page__tab-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin: 28px 0;
+  list-style: none;
+  gap: 10px;
+  padding: 0;
+}
+
+.wishlist-page__tab-button {
+  background-color: inherit;
+  color: black;
+  padding: 10px 16px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.wishlist-page__tab-button.active {
+  background-color: black;
+  color: white;
+}
+
+.wishlist-page__tab-content {
+  display: none;
+}
+
+.wishlist-page__tab-content.active {
+  display: block;
+}
+
+/* Empty State */
+
+.wishlist__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.wishlist__empty-state-title,
+.wishlist__empty-state-description {
+  max-width: 55ch;
+}
+
+.wishlist__empty-state-description {
+  margin-block-end: 28px;
+}
+
+.wishlist__empty-state-button {
+    height: 45px;
+    background: black;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    width: 200px;
+    letter-spacing: 0.1rem;
+    line-height: calc(1 + 0.8 / var(--font-body-scale));
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
+}
+
+.sfl-page__card {
+  position: relative;
+  padding: 0;
+}
+
+.sfl-page__remove-button-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.sfl-page__remove-button {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.card-information__wrapper.card-information__wrapper--wishlist {
+  width: 100%;
+  display: grid;
+  grid-template-areas: "title title" "price price" "variants variants";
+  gap: 5px 0;
+}
+
+@media screen and (min-width: 750px) {
+  .card-information__wrapper.card-information__wrapper--wishlist {
+    grid-template-areas: "title price" "variants variants";
+  }
+}
+
+.card-information__variants {
+  grid-area: variants; 
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-information__variant {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+}
+
+.wishlist-page__tab-content {
+  min-height: 45vh;
+}
+
+.wishlist-card__variant-select {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.wishlist-card__variant-select label {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px 0;
+}

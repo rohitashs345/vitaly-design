@@ -1,0 +1,27 @@
+{% liquid
+  assign color_option = product.options_with_values | where: 'name', 'Color' | first
+  assign colors = color_option.values
+%}
+var product = { id: {{ product.id }}, title: {{ product.title | json }}, available: {{ product.available | json }},
+handle: {{ product.handle | json }}, description: {{ product.description | strip_html | json }}, type:
+{{ product.type | json }}, tags: {{ product.tags | json }}, options_with_values:
+{{ product.options_with_values | json }}, colors: {{ colors | json }}, featured_media: { alt:
+{{ product.featured_media.alt | json }}, src: {{ product.featured_media.preview_image.src | json }} }, url:
+{{ product.url | within: collection | json }}, mf: { } };
+
+var variants = [];
+{% for variant in product.variants %}
+  var variant = { id: {{ variant.id }}, available: {{ variant.available | json }}, options:
+  {{ variant.options | json }}, option1: {{ variant.option1 | json }}, option2: {{ variant.option2 | json }}, option3:
+  {{ variant.option3 | json }}, inventory_quantity: {{ variant.inventory_quantity | json }}, price:
+  {{ variant.price | json }}, compare_price: {{ variant.compare_at_price | json }}, media: { alt:
+  {{ variant.featured_media.alt | json }}, src: {{ variant.featured_media.preview_image.src | json }}
+  }, mf: { } };
+
+  {% if product.selected_or_first_available_variant.id == variant.id %}
+    product.currentVariant = variant;
+  {% endif %}
+
+  variants.push(variant);
+{% endfor %}
+product.variants = variants;

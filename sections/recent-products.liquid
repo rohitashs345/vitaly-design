@@ -1,0 +1,158 @@
+{% assign set_collection = section.settings.collection %}
+
+<div class="recently-viewed-wrapper">
+  <h2
+    id="recently_viewed_heading"
+    class="recently-viewed-heading product-recommendations__heading"
+    style="padding-left: 10px;"
+  ></h2>
+  <slider-component class="slider-mobile-gutter featured-collection-slider">
+    <ul class="recently-viewed-grid grid grid--2-col product-grid slider--tablet grid--peek grid--4-col-desktop grid--quarter-max">
+      <!-- Recently viewed products will appear here -->
+    </ul>
+  </slider-component>
+</div>
+
+<script>
+  
+  
+  async function PromisesSequential(PromiseArr) {
+    let res = [];
+    for (let i=0; i < PromiseArr.length; i++) {
+      res.push(await PromiseArr[i]);
+    }
+    return res;
+  }  
+
+  function setRecentlyViewedProducts() {
+    const productData = {
+      product: {{ product | json }},
+      productTitle: "{{ product.title }}",
+      productImg: "{{ product.featured_media | image_url: width: 500 }}",
+      productPrice: "{{ product.price | money_without_trailing_zeros }}",
+      productCompareAtPrice: "{{ product.compare_at_price | money_without_trailing_zeros }}",
+      productUrl: "{{ product.url }}",
+      productImageAltText: "{{product.featured_media.alt | escape }}"
+    };
+    const productList = [];
+    let jsonResp, jsonRespArr, jsonRespArrStr;
+    const numberOfProducts = 8;
+    if (productData.productTitle != 'Gift Card') {
+        productList.push(productData);
+        const currProductPageTitle = productData.productTitle;
+        const productDataString = JSON.stringify(productList);
+        const localData = localStorage.getItem("recentlyViewedProduct");
+        if (localData === null) {
+          localStorage.setItem("recentlyViewedProduct", productDataString);
+        } else if (localData) {
+          const oldProductData = localStorage.getItem("recentlyViewedProduct");
+          const countProductData = (oldProductData.match(/productTitle/g) || []).length;
+        
+          const sameProduct = oldProductData.includes(currProductPageTitle);
+          
+          if (sameProduct == false) {
+            jsonResp = JSON.parse(oldProductData);
+            jsonRespArr = jsonResp.concat(productList);
+            jsonRespArrStr = JSON.stringify(jsonRespArr);
+            localStorage.setItem("recentlyViewedProduct", jsonRespArrStr);
+          } 
+        }
+    }
+  }
+
+  setRecentlyViewedProducts();
+
+  const localViewed = localStorage.recentlyViewedProduct;
+  
+  function getRecentlyViewedProducts() {
+    let productData = JSON.parse(localStorage.getItem("recentlyViewedProduct"));
+    let productDataDupe = JSON.parse(localStorage.getItem("recentlyViewedProduct"));
+    const recentlyViewedHtml = [];
+    const cart = {{ cart | json }};
+    const width = window.innerWidth;
+    // filter out items that are not products
+    productData = productData.filter(item => item.product);
+    productDataDupe = productDataDupe.filter(item => item.product);
+
+    let set_collection = {{ set_collection | json }};
+    if (set_collection) {
+      let set_collection_products = [];
+      {% for _product in set_collection.products %}
+        var _product = {
+          product: {{ _product | json }},
+          productTitle: "{{ _product.title }}",
+          productImg: "{{ _product.featured_media | image_url: width: 500 }}",
+          productPrice: "{{ _product.price | money_without_trailing_zeros }}",
+          productCompareAtPrice: "{{ _product.compare_at_price | money_without_trailing_zeros }}",
+          productUrl: "{{ _product.url }}",
+          productImageAltText: "{{_product.featured_media.alt | escape }}"
+        };
+        set_collection_products.push(_product);
+      {% endfor %}
+
+      const total_count = 12;
+      const count_from_set = total_count - productData.length;
+      let productDataIds = productData.map(item => item.product.id);
+      // remaining items from set collection
+      // filter out items if in recentlyviewed localstorage
+      set_collection_products = set_collection_products.filter(p => productDataIds.indexOf(p.product.id) == -1);
+      for (let i = 0; i < count_from_set; i++ ) {
+          productData.unshift(set_collection_products[i]);
+      }
+    }
+    //console.log({productData});
+    //console.log({productDataDupe});
+
+    if (productDataDupe.length > 0) {
+      // get product cards
+      let productFetchs = productData.reverse().map((item) => {
+        let product_url = `/products/${item.product.handle}?view=raw-product-card`;
+        return fetch(product_url);
+      });
+
+      PromisesSequential(productFetchs)
+        .then((res) => {
+          // filter out responses that are 404
+          res = res.filter((res_item) => res_item.status !== 404)
+          res.forEach((res_item) => {
+            res_item.text()
+              .then((res_item) => {
+                document.querySelector('.recently-viewed-grid')
+                  .insertAdjacentHTML('beforeend', `<li class="Slide-{{ section.id }} recently-viewed-grid-item grid__item slider__slide">${ res_item }</li>`);
+              })
+          });
+
+          if (res.length) {
+            const heading = document.getElementById('recently_viewed_heading');
+            heading.textContent = 'Recently Viewed';
+          }
+        });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function (event) {
+    getRecentlyViewedProducts();
+  });
+
+
+
+</script>
+
+<style>
+  .recently-viewed-grid-item .card__badge-on-sale,
+  .recently-viewed-grid-item .card__badge-sold-out {
+    z-index: 1;
+  }
+</style>
+{% schema %}
+{
+  "name": "Recent Products",
+  "settings": [
+    {
+      "type": "collection",
+      "label": "Set collection",
+      "id": "collection"
+    }
+  ]
+}
+{% endschema %}

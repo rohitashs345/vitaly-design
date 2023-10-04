@@ -1,0 +1,858 @@
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+{{ 'section-hero-banner.css' | asset_url | stylesheet_tag }}
+
+<link rel="stylesheet" href="{{ 'component-slider.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-slider.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- style -%}
+  #MulticolumnHeroBanner--{{- section.id }} {
+    background-color: {{ section.settings.background_color -}};
+  }
+
+  #MulticolumnHeroBanner--{{- section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #MulticolumnHeroBanner--{{- section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div id="MulticolumnHeroBanner--{{- section.id }}" class="multicolumn multicolumn--hero-banner background-primary{% if section.settings.title == blank %} no-heading{% endif %}">
+  <div class="page-width">
+    <slider-component class="slider-mobile-gutter">
+      <ul
+        class="multicolumn-list grid grid--1-col{% if section.blocks.size > 3 %} grid--2-col-tablet{% else %} grid--3-col-tablet{% endif %}{% if section.blocks.size > 1 %} slider slider--mobile grid--peek{% endif %}"
+        id="Slider-{{ section.id }}"
+        role="list"
+      >
+        {%- for block in section.blocks -%}
+          <li
+            id="Slide-{{ section.id }}-{{ forloop.index }}"
+            class="multicolumn-list__item grid__item slider__slide{%- if model_available == true and block.settings.show_3d_model %} model-block{%- endif -%}"
+            {{ block.shopify_attributes }}
+          >
+
+            {% style %}
+              #Slide-{{ section.id }}-{{ forloop.index }} .hero-banner-media {
+                background-color: {{ block.settings.background_color -}};
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__info {
+                align-items: {{ block.settings.vertical_alignment -}};
+                text-align: {{ block.settings.text_alignment -}};
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__title {
+                color: {{ block.settings.title_color }};
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__description {
+                color: {{ block.settings.description_color }};
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__link {
+                color: {{ block.settings.link_color }};
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__link.multicolumn-card__link--button {
+                background-color: {{ block.settings.link_background_color -}};
+                border: 1px solid {{ block.settings.link_border_color -}};
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__overlay {
+                display: block;
+                background: {{ block.settings.overlay_color -}};
+                opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 -}};
+                height: calc(100% + 1px);
+              }
+
+              #Slide-{{ section.id }}-{{ forloop.index }} {
+                border: {{ block.settings.border_width -}}px solid {{block.settings.border_color -}};
+              }
+            {% endstyle %}
+
+            {%- liquid
+              assign banner_link = block.settings.link
+              assign banner_link_title = block.settings.link_label
+              if block.type == 'product' and block.settings.product != blank
+                assign banner_link = block.settings.product.url
+                assign banner_link_title = block.settings.product.title
+              endif
+            -%}
+
+            <a href="{{ banner_link }}" title="{{ banner_link_title -}}">
+              <div class="multicolumn-card">
+                <div class="multicolumn-card__info">
+                  <div class="multicolumn-card__info-inner">
+                    {%- liquid 
+                      assign title = block.settings.title
+                      if block.settings.product != blank and block.settings.use_product_title
+                        assign title = block.settings.product.title
+                      endif
+                    -%}
+                    {% if title != blank -%}
+                      <h3 class="multicolumn-card__title">
+                        {{- title -}}
+                      </h3>
+                    {% endif %}
+                    {%- if block.settings.description != blank -%}
+                      <div class="multi-component-description multicolumn-card__description">
+                        {{- block.settings.description -}}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.link_label != blank -%}
+                      <div
+                        class="link multicolumn-card__link multicolumn-card__link--{{- block.settings.link_type -}}"
+                        style="display: inline-block;"
+                      >
+                        {{- block.settings.link_label | escape -}}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+
+                {%- case block.type -%}
+                  {%- when 'product' -%}
+                    {%- liquid
+                      assign model_available = false
+                      if block.settings.product != blank
+                        for media in block.settings.product.media
+                          if media.media_type == 'model'
+                            assign model_available = true
+                          endif
+                        endfor
+                        assign roll = block.settings.roll
+                        assign yaw = block.settings.yaw
+                        assign pitch = block.settings.pitch
+                      endif
+                    -%}
+
+                    {%- if model_available == true and block.settings.show_3d_model -%}
+                      <div class="multi-component-product-wrapper multi-component-product-wrapper-with-model">
+                        <div
+                          class="hero-banner-media media--transparent media--{{ section.settings.image_ratio }} media--{{ section.settings.mobile_image_ratio}}--mobile"
+                        >
+                          {%- for media in block.settings.product.media -%}
+                            {%- if media.media_type == 'model' -%}
+                              {{
+                                media
+                                | model_viewer_tag:
+                                  auto-rotate-delay: '1',
+                                  image_size: '1024x',
+                                  environment-image: 'neutral',
+                                  auto-rotate: true,
+                                  rotation-per-second: '1rad',
+                                  disable-zoom: 'true'
+                              }}
+                              <div class="controls" style="display:none; visibility: hidden;">
+                                <div>Roll: <input id="roll" value="0" size="3" class="number"> degrees</div>
+                                <div>Pitch: <input id="pitch" value="0" size="3" class="number"> degrees</div>
+                                <div>Yaw: <input id="yaw" value="0" size="3" class="number"> degrees</div>
+                              </div>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                      <script>
+                        const modelViewerExists = document.querySelectorAll('model-viewer').length > 0;
+                        if (modelViewerExists) {
+                          const modelViewerTransform = document.querySelector('model-viewer');
+                          const roll = document.querySelector('#roll');
+                          const pitch = document.querySelector('#pitch');
+                          const yaw = document.querySelector('#yaw');
+
+                          var rolly = `{{ roll }}`;
+                          var yawy = `{{ yaw }}`;
+                          var pitchy = `{{ pitch }}`;
+
+                          modelViewerTransform.orientation = `${rolly}deg ${pitchy}deg ${yawy}deg`;
+
+                          const updateOrientation = () => {
+                            modelViewerTransform.orientation = `${roll.value}deg ${pitch.value}deg ${yaw.value}deg`;
+                          };
+
+                          roll.addEventListener('input', () => {
+                            updateOrientation();
+                          });
+                          pitch.addEventListener('input', () => {
+                            updateOrientation();
+                          });
+                          yaw.addEventListener('input', () => {
+                            updateOrientation();
+                          });
+
+                          // model viewer change material (colour and metallness)
+                          // const modelViewer = document.querySelector('model-viewer');
+                          modelViewerTransform.addEventListener('load', function () {
+                            const model = document.querySelector('model-viewer');
+
+                            const colorString = '1, 1, 1, 1';
+
+                            const color = colorString.split(',').map((numberString) => parseFloat(numberString));
+
+                            const metalnessDisplay = 1;
+
+                            const roughnessDisplay = 0;
+
+                            model.model.materials.forEach(changeMaterial);
+
+                            function changeMaterial(material) {
+                              material.pbrMetallicRoughness.setBaseColorFactor(color);
+                              material.pbrMetallicRoughness.setMetallicFactor(metalnessDisplay);
+                              material.pbrMetallicRoughness.setRoughnessFactor(roughnessDisplay);
+                            }
+                          });
+                        }
+                      </script>
+                    {%- else -%}
+                      <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width">
+                        <div
+                          class="hero-banner-media media--transparent media--{{ section.settings.image_ratio }} media--{{ section.settings.mobile_image_ratio}}--mobile"
+                        >
+                          {%- if block.settings.product != blank -%}
+                            {%- style -%}
+                              #Slide-{{ section.id }}-{{ forloop.index }} .multicolumn-card__image.multicolumn-card__image--product {
+                                object-fit: {{ block.settings.image_fit -}};
+                                {%- if block.settings.image_fit == 'contain' -%}
+                                  object-position: {{ block.settings.image_position }} center;
+                                {%- endif -%}
+                              }
+                            {%- endstyle -%}
+                            {{
+                              block.settings.product.featured_image
+                              | image_url: width: 2880
+                              | image_tag:
+                                class: 'multicolumn-card__image multicolumn-card__image--product',
+                                height: block.settings.featured_image.height,
+                                width: block.settings.featured_image.width,
+                                alt: block.settings.featured_image.alt
+                            }}
+                          {%- endif -%}
+                          {%- if block.settings.overlay_opacity != 0 -%}
+                            <div
+                              class="multicolumn-card__overlay"
+                            ></div>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  {%- when 'banner' -%}
+                    <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width">
+                      <div
+                        class="hero-banner-media media--transparent media--{{ section.settings.image_ratio }} media--{{ section.settings.mobile_image_ratio}}--mobile"
+                      >
+                        {%- if block.settings.image != blank -%}
+                          {%- liquid
+                            assign image_mobile = block.settings.image_mobile | default: block.settings.image
+                            if section.block.size > 1
+                              assign mobile_sizes = '80vw'
+                            else
+                              assign mobile_sizes = '100vw'
+                            endif
+                          -%}
+                          <picture>
+                            <source
+                              srcset="
+                                {%- if block.settings.image.width >= 990 -%}{{ block.settings.image | image_url: width: 990 }} 990w,{%- endif -%}
+                                {%- if block.settings.image.width >= 1100 -%}{{ block.settings.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                                {%- if block.settings.image.width >= 1280 -%}{{ block.settings.image | image_url: width: 1280 }} 1280w,{%- endif -%}
+                                {%- if block.settings.image.width >= 1445 -%}{{ block.settings.image | image_url: width: 1445 }} 1445w,{%- endif -%}
+                                {%- if block.settings.image.width >= 1680 -%}{{ block.settings.image | image_url: width: 1680 }} 1680w,{%- endif -%}
+                                {%- if block.settings.image.width >= 2048 -%}{{ block.settings.image | image_url: width: 2048 }} 2048w,{%- endif -%}
+                                {%- if block.settings.image.width >= 2200 -%}{{ block.settings.image | image_url: width: 2200 }} 2200w,{%- endif -%}
+                                {%- if block.settings.image.width >= 2890 -%}{{ block.settings.image | image_url: width: 2890 }} 2890w,{%- endif -%}
+                                {%- if block.settings.image.width >= 4096 -%}{{ block.settings.image | image_url: width: 4096 }} 4096w,{%- endif -%}
+                                {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                              "
+                              media="(min-width: 991px)"
+                              ,
+                              sizes="100vw / {{ section.blocks.size }}"
+                            >
+                            {{
+                              image_mobile
+                              | image_url: width: 1400
+                              | image_tag:
+                                class: 'multicolumn-card__image',
+                                height: image_mobile.height,
+                                width: image_mobile.width,
+                                widths: '480, 720, 960, 1280, 1440, 1880, 2160, 2820',
+                                sizes: mobile_sizes,
+                                alt: image_mobile.alt
+                            }}
+                          </picture>
+                        {%- endif -%}
+
+                        {%- if block.settings.overlay_opacity != 0 -%}
+                          <div
+                            class="multicolumn-card__overlay"
+                          ></div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                {%- endcase -%}
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.blocks.size > 1 and section.settings.show_slider_buttons -%}
+        <div class="slider-buttons no-js-hidden {% if section.blocks.size < 2 %} small-hide{% endif %}">
+          <button
+            type="button"
+            class="slider-button slider-button--prev"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+          <div class="slider-counter caption">
+            <span class="slider-counter--current">1</span>
+            <span aria-hidden="true"> / </span>
+            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+            <span class="slider-counter--total">{{ section.blocks.size }}</span>
+          </div>
+          <button
+            type="button"
+            class="slider-button slider-button--next"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+        </div>
+      {%- endif -%}
+    </slider-component>
+    <div class="center small-hide medium-hide">
+      {%- if section.settings.button_label != blank -%}
+        <a
+          class="button button--primary"
+          {% if section.settings.button_link == blank %}
+            role="link" aria-disabled="true"
+          {% else %}
+            href="{{ section.settings.button_link }}"
+          {% endif %}
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Multicolumn Hero Banner",
+  "class": "spaced-section spaced-section--full-width",
+  "tag": "section",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image Aspect Ratio"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "2-1",
+          "label": "2/1"
+        },
+        {
+          "value": "cropped",
+          "label": "Cropped"
+        },
+        {
+          "value": "16-9",
+          "label": "16/9"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        }
+      ],
+      "default": "portrait",
+      "label": "Desktop"
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_ratio",
+      "options": [
+        {
+          "value": "cropped",
+          "label": "Cropped"
+        },
+        {
+          "value": "16-9",
+          "label": "16/9"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        }
+      ],
+      "default": "portrait",
+      "label": "Mobile"
+    },
+    {
+      "type": "checkbox", 
+      "id": "show_slider_buttons", 
+      "label": "Show Slider Buttons On Mobile",
+      "default": true
+    },
+    {
+      "type": "color", 
+      "id": "background_color", 
+      "label": "Background Color", 
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Images"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile Banner"
+        },
+        {
+          "type": "color", 
+          "id": "overlay_color", 
+          "label": "Overlay color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Overlay opacity"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.multicolumn.blocks.column.settings.link.label"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "CTA text"
+        },
+        {
+          "type": "select",
+          "id": "link_type",
+          "label": "CTA type",
+          "options": [
+            {
+              "value": "link",
+              "label": "Link"
+            },
+            {
+              "value": "button",
+              "label": "Button"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Heading",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "link_color",
+          "label": "CTA Text",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "link_background_color",
+          "label": "CTA Background"
+        },
+        {
+          "type": "color",
+          "id": "link_border_color",
+          "label": "CTA Border",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "Position"
+        },
+        {
+          "type": "select",
+          "id": "vertical_alignment",
+          "label": "Vertical Position",
+          "options": [
+            {
+              "value": "start",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Bottom"
+            }
+          ],
+          "default": "end"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left",
+          "label": "Text Alignment"
+        }
+      ]
+    },
+    {
+      "type": "product", 
+      "name": "Product", 
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "select", 
+          "id": "image_fit",
+          "label": "Image Fit",
+          "options": [
+            {
+              "value": "contain",
+              "label": "Contain"
+            },
+            {
+              "value": "cover",
+              "label": "Cover"
+            }
+          ]
+        },
+        {
+          "type": "select", 
+          "id": "image_position",
+          "label": "Image Position", 
+          "info": "Only available if Image Fit is set to Contain",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "top"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Overlay opacity"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading"
+        },
+        {
+          "type": "checkbox", 
+          "id": "use_product_title", 
+          "label": "Use Product Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "CTA text"
+        },
+        {
+          "type": "select",
+          "id": "link_type",
+          "label": "CTA type",
+          "options": [
+            {
+              "value": "link",
+              "label": "Link"
+            },
+            {
+              "value": "button",
+              "label": "Button"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Position"
+        },
+        {
+          "type": "select",
+          "id": "vertical_alignment",
+          "label": "Vertical Position",
+          "options": [
+            {
+              "value": "start",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left",
+          "label": "Text Alignment"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Heading",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "link_color",
+          "label": "Link",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "link_background_color",
+          "label": "Button background",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "link_border_color",
+          "label": "Button border",
+          "default": "#000000"
+        },
+        {
+          "type": "color", 
+          "id": "background_color", 
+          "label": "Background Color", 
+          "default": "#f1f1f1"
+        },
+        {
+          "type": "color", 
+          "id": "overlay_color", 
+          "label": "Overlay color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "unit": "px",
+          "label": "Border Width",
+          "default": 0
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "#5A5A5A"
+        },
+        {
+          "type": "header",
+          "content": "3D Model"
+        },
+        {
+          "type": "checkbox", 
+          "id": "show_3d_model",
+          "label": "Display 3d Model"
+        },
+        {
+          "type": "range",
+          "id": "roll",
+          "min": -100,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Roll"
+        },
+        {
+          "type": "range",
+          "id": "pitch",
+          "min": -100,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Pitch"
+        },
+        {
+          "type": "range",
+          "id": "yaw",
+          "min": -100,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Yaw"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multicolumn Hero Banner",
+      "blocks": [
+        {
+          "type": "banner"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "banner"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1025 @@
+<style>
+  *,
+  ::after,
+  ::before {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @font-face {
+    font-family: 'Gerstner Programm FSL';
+    src: url('https://cdn.shopify.com/s/files/1/0161/1184/files/GerstnerProgrammFSL-Regular.woff2?v=1654841700')
+        format('woff2'),
+      url('https://cdn.shopify.com/s/files/1/0161/1184/files/GerstnerProgrammFSL-Regular.woff?v=1654841700')
+        format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  .container {
+    max-width: 1140px;
+    margin: 0px auto;
+    padding: 0px 30px;
+  }
+
+  .container-fluid {
+    width: 100%;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .col-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .col-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+
+  .section-heading {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 47px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin-bottom: 20px;
+    color: currentcolor;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .container {
+      padding: 0px 15px;
+    }
+
+    .section-heading {
+      font-size: 24px;
+      line-height: 34px;
+    }
+  }
+</style>
+
+<style>
+  .main-section {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+  }
+
+  .main-section .col-wrapper {
+    max-width: 1440px;
+    margin: 0px auto;
+    padding: 70px 15px;
+  }
+
+  .main-text {
+    margin-bottom: 16px;
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+  }
+
+  .main-sub-text {
+    margin-bottom: 30px;
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+  }
+
+  .main-image-box {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+
+  .main-section .image-wrapper {
+    position: relative;
+    padding-bottom: 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+    width: 20%;
+  }
+
+  .main-section .image-wrapper .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /*     border: 1px solid rgba(255, 255, 225, 0.8); */
+    padding: 5px;
+  }
+
+  .main-data-wrapper {
+    max-width: 1440px;
+    margin: 0px auto;
+    padding: 0 15px 100px 15px;
+  }
+
+  .signup-button_lcButtonContainer__1Ws4J {
+    width: auto;
+    height: auto;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    display: flex;
+    justify-content: center;
+    max-width: 312px;
+    margin: 0px auto;
+  }
+
+  .signup-button_lcButton__3PS4y {
+    width: 100%;
+    height: auto;
+    border-radius: 0px;
+    padding: 10px 20px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    border: none;
+    cursor: pointer;
+  }
+
+  .signup-button_lcButtonText__1Qqcl {
+    margin-right: 0px;
+  }
+
+  .main-data-wrapper .main-sub-text:last-child {
+    margin-bottom: 0px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .main-image-box {
+      max-width: 1440px;
+      margin: 0px auto;
+    }
+
+    .main-section .image-wrapper {
+      padding-bottom: 50%;
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    .main-section .image-wrapper:last-child {
+      display: none;
+    }
+
+    .main-data-wrapper {
+      display: block;
+      padding: 30px 15px 60px 15px;
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
+    .main-section .col-wrapper {
+      padding: 40px 15px;
+    }
+  }
+</style>
+<section class="main-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="col-wrapper">
+          <h2 class="section-heading">Join the Creator Community</h2>
+          <p class="main-text">Create content, tag us on socials, and earn rewards.</p>
+          <p class="main-sub-text">
+            Our Creator Community gets access to exclusive discounts, free products, and monthly content collabs.
+          </p>
+          <div
+            class="lc-signup-container"
+            data-lc-button-text="Join Now"
+            data-lc-button-text-color="black"
+            data-lc-button-bg-color="white"
+          ></div>
+        </div>
+
+        {% section 'loudcrowd-landingpagefeed' %}
+
+        <div class="main-data-wrapper">
+          <h2 class="section-heading">1. Sign up</h2>
+          <p class="main-sub-text">Sign up with your email, Instagram username, and optional Tiktok username.</p>
+          <h2 class="section-heading">2. Make your first collab post</h2>
+          <p class="main-sub-text">Tag us in an Instagram feed post or drop @vitaly in the caption.</p>
+          <h2 class="section-heading">3. Get your first reward</h2>
+          <p class="main-sub-text">We’ll send you a 25% off code via email.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reward-section {
+    padding: 60px 0px 100px;
+  }
+
+  .reward-section .section-heading {
+    margin-bottom: 44px;
+  }
+
+  .reward-section .row {
+    margin: 0px -9px;
+  }
+
+  .reward-section .col-wrapper {
+    text-align: center;
+    padding: 14px;
+    background: #f1f1f1;
+    border: 1px solid #000000;
+    margin: 0px 9px;
+  }
+
+  .post-count {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .post-discount {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin: 0;
+    margin-bottom: 20px;
+  }
+
+  .reward-section .image-wrapper {
+    position: relative;
+    padding: bo;
+    padding-bottom: 100%;
+    width: 100%;
+  }
+
+  .reward-section .image-wrapper .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .data-wrapper {
+    text-align: center;
+    max-width: 465px;
+    margin: 0px auto;
+    padding: 50px 15px 0px;
+  }
+
+  .reward-section .apply-button {
+    background: #000;
+    color: #fff;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .reward-section .container {
+      padding: 0px 20px;
+    }
+
+    .post-discount {
+      font-size: 16px;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .reward-section {
+      padding: 20px 0px 40px;
+    }
+
+    .reward-section .container {
+      padding: 0px 5px;
+    }
+
+    .reward-section .section-heading {
+      margin-bottom: 16px;
+    }
+
+    .reward-section .row {
+      margin: 0px -9px;
+      max-width: 1440px;
+      margin: 0px auto;
+    }
+
+    .reward-section .col-3 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    .reward-section .col-wrapper {
+      margin: 5px;
+    }
+
+    .data-wrapper {
+      padding: 20px 10px 0px;
+    }
+
+    .reward-section .main-text,
+    .reward-section .main-sub-text {
+      font-size: 15px;
+      line-height: 25px;
+    }
+
+    .reward-section .main-sub-text {
+      margin-bottom: 20px;
+    }
+
+    .post-discount {
+      font-size: 18px;
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
+    .reward-section .col-wrapper {
+      padding: 10px;
+    }
+  }
+
+  @media only screen and (max-width: 375px) {
+    .reward-section .col-3 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+
+    .reward-section .col-wrapper {
+      margin: 8px 16px;
+    }
+  }
+</style>
+<section class="reward-section">
+  <div class="container">
+    <h2 class="section-heading">Rewards</h2>
+    <div class="row">
+      <div class="col-3">
+        <div class="col-wrapper">
+          <p class="post-count">1st Post</p>
+          <h6 class="post-discount">25% Discount</h6>
+          <div class="image-wrapper">
+            <img
+              class="image"
+              src="https://cdn.shopify.com/s/files/1/0161/1184/files/main-image.png?v=1654842360"
+              class="image"
+              alt="Reward Image"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="col-wrapper">
+          <p class="post-count">5 posts</p>
+          <h6 class="post-discount">$40 Site Credit</h6>
+          <div class="image-wrapper">
+            <img
+              class="image"
+              src="https://cdn.shopify.com/s/files/1/0161/1184/files/reward-2_1.png?v=1654920295"
+              class="image"
+              alt="Reward Image"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="col-wrapper">
+          <p class="post-count">Tiktok</p>
+          <h6 class="post-discount">$50 Site Credit</h6>
+          <div class="image-wrapper">
+            <img
+              class="image"
+              src="https://cdn.shopify.com/s/files/1/0161/1184/files/reward-3.jpg?v=1654920213"
+              class="image"
+              alt="Reward Image"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="col-wrapper">
+          <p class="post-count">10 posts</p>
+          <h6 class="post-discount">Free Glyph Pendant</h6>
+          <div class="image-wrapper">
+            <img
+              class="image"
+              src="https://cdn.shopify.com/s/files/1/0161/1184/files/reward-4.png?v=1654920213"
+              class="image"
+              alt="Reward Image"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="data-wrapper">
+          <p class="main-text">Tag @vitaly in an IG feed post to claim your first reward.</p>
+          <p class="main-sub-text">
+            Post multiple times to unlock more rewards, and tag us on Tiktok @vitalydesign to earn $50.
+          </p>
+          <!--
+            <div
+                 class="lc-signup-container"
+                 data-lc-button-text="APPLY"
+                 data-lc-button-text-color="white"
+                 data-lc-button-bg-color="black">
+              <script type="text/javascript" src="https://pub.loudcrowd.com/launch.js?hid=cHJvZ3JhbV9ob3N0OjIyMg"></script>
+            </div>
+          -->
+          <div
+            id="lc-signup-container"
+            data-lc-button-text="Join Now"
+            data-lc-button-text-color="white"
+            data-lc-button-bg-color="black"
+            data-lc-description="Create content, tag us on socials, and earn rewards. Sign up below to join the Community."
+          >
+            <script
+              type="text/javascript"
+              src="https://pub.loudcrowd.com/launch.js?hid=cHJvZ3JhbV9ob3N0OjIyMg"
+            ></script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-community-feed h1 {
+    margin-bottom: 24px;
+  }
+  .browes-feed {
+    background: #000;
+    color: #fff;
+    padding: 70px 0px;
+  }
+
+  .browes-feed .row:first-child {
+    max-width: 720px;
+    margin: 0px auto;
+  }
+
+  .child-col-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px;
+  }
+
+  .svg-wrapper {
+    padding: 10px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    margin: 8px;
+  }
+
+  .svg-wrapper .image {
+    width: auto;
+    height: 20px;
+    display: flex;
+  }
+
+  .child-col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .browes-feed .child-col-6 .svg-wrapper svg {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    /*     padding: 0px; */
+    /*     border: 0px solid #fff; */
+  }
+
+  .browes-feed .child-col-6:nth-child(3) .svg-wrapper .image {
+    width: auto;
+    height: 40px;
+    display: flex;
+  }
+
+  .rules-wrapper p {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: left;
+  }
+
+  .full-read-link {
+    display: block;
+    text-align: center;
+    margin: 40px 0px 60px;
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .community-title {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin-bottom: 26px;
+  }
+
+  .browes-feed .browes-feed-image-box {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+
+  .image-col-wrapper {
+    flex: 0 0 20%;
+    max-width: 20%;
+    padding: 5px;
+  }
+
+  .browes-feed .browes-feed-image-box .image-wrapper {
+    position: relative;
+    padding-bottom: 100%;
+    width: 100%;
+  }
+
+  .browes-feed .browes-feed-image-box .image-wrapper .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 225, 0.8);
+  }
+
+  .more-community-link {
+    display: block;
+    text-align: center;
+    margin: 24px 0px 0px;
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .image-col-wrapper {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
+
+    .browes-feed .browes-feed-image-box .image-col-wrapper:nth-child(9),
+    .browes-feed .browes-feed-image-box .image-col-wrapper:nth-child(10) {
+      display: none;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .browes-feed {
+      padding: 50px 0px;
+    }
+
+    .browes-feed-child-row {
+      max-width: 520px;
+      margin: 0px auto;
+    }
+
+    .child-col-6 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+
+    .child-col-wrapper {
+      margin: 5px 20px;
+    }
+
+    .full-read-link {
+      margin: 46px 0px;
+    }
+
+    .community-title {
+      margin-bottom: 20px;
+    }
+
+    .browes-feed .row:last-child {
+      margin: 0px auto;
+    }
+
+    .image-col-wrapper {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    .browes-feed .browes-feed-image-box .image-wrapper {
+      position: relative;
+      padding-bottom: 100%;
+    }
+
+    .rules-wrapper {
+      width: 100%;
+    }
+
+    .more-community-link {
+      margin: 16px 0px 0px;
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
+    .browes-feed .col-wrapper {
+      padding: 0px 10px;
+    }
+
+    .child-col-wrapper {
+      margin: 5px 10px;
+    }
+
+    .svg-wrapper {
+      padding: 8px;
+      margin: 6px 12px 6px 0px;
+    }
+
+    .browes-feed .child-col-6 .svg-wrapper svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .section-heading {
+      padding: 0px 10px;
+    }
+
+    .community-title {
+      padding: 0px 10px;
+    }
+  }
+</style>
+<section class="browes-feed">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="col-wrapper">
+          <h2 class="section-heading">Rules and Content Guidelines</h2>
+          <div class="row browes-feed-child-row">
+            <div class="child-col-6">
+              <div class="child-col-wrapper">
+                <div class="svg-wrapper">
+                  <!--
+                    <img class="image" src="https://cdn.shopify.com/s/files/1/0161/1184/files/insta-icon.png?v=1654857414" alt=""/>
+                  -->
+                  <svg
+                    version="1.1"
+                    width="30px"
+                    height="30px"
+                    x="0"
+                    y="0"
+                    viewBox="0 0 409.61 409.61"
+                    style="enable-background:new 0 0 512 512"
+                    xml:space="preserve"
+                    class=""
+                  >
+                    <g>
+                      <g>
+                        <g>
+                          <path d="M307.205,0h-204.8C46.09,0,0.005,46.085,0.005,102.4v204.81c0,56.3,46.085,102.4,102.4,102.4h204.8    c56.315,0,102.4-46.1,102.4-102.4V102.4C409.605,46.085,363.52,0,307.205,0z M375.47,307.21c0,37.632-30.612,68.265-68.265,68.265    h-204.8c-37.637,0-68.265-30.633-68.265-68.265V102.4c0-37.642,30.628-68.265,68.265-68.265h204.8    c37.653,0,68.265,30.623,68.265,68.265V307.21z" fill="#ffffff" data-original="#ffffff" class=""></path>
+                        </g>
+                      </g>
+                      <g>
+                        <g>
+                          <circle cx="315.755" cy="93.865" r="25.6" fill="#ffffff" data-original="#ffffff" class=""></circle>
+                        </g>
+                      </g>
+                      <g>
+                        <g>
+                          <path d="M204.805,102.4c-56.566,0-102.4,45.839-102.4,102.4c0,56.54,45.834,102.41,102.4,102.41c56.55,0,102.4-45.87,102.4-102.41    C307.205,148.239,261.355,102.4,204.805,102.4z M204.805,273.075c-37.699,0-68.265-30.566-68.265-68.275    s30.566-68.265,68.265-68.265s68.265,30.556,68.265,68.265S242.504,273.075,204.805,273.075z" fill="#ffffff" data-original="#ffffff" class=""></path>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+                <div class="rules-wrapper">
+                  <p>For Instagram posts, tag @vitaly in your photo or caption.</p>
+                </div>
+              </div>
+            </div>
+            <div class="child-col-6">
+              <div class="child-col-wrapper">
+                <div class="svg-wrapper">
+                  <!--
+                    <img class="image" src="https://cdn.shopify.com/s/files/1/0161/1184/files/tiktok-icon.png?v=1654857414" alt=""/>
+                  -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 85 100" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M61.8647 0C63.5003 14.0655 71.3508 22.4513 85 23.3434V39.1634C77.09 39.9366 70.1613 37.3495 62.1026 32.4726V62.0608C62.1026 99.6481 21.1253 111.394 4.65109 84.4526C-5.93522 67.116 0.547412 36.6952 34.5069 35.476V52.1584C31.9198 52.5747 29.1542 53.2289 26.6266 54.0913C19.0735 56.6487 14.7914 61.4363 15.9808 69.8816C18.2706 86.0584 47.9479 90.846 45.4798 59.2358V0.0297368H61.8647V0Z" fill="white"/>
+                  </svg>
+                </div>
+                <div class="rules-wrapper">
+                  <p>For Tiktok posts, tag @vitalydesign in your caption.</p>
+                </div>
+              </div>
+            </div>
+            <div class="child-col-6">
+              <div class="child-col-wrapper">
+                <div class="svg-wrapper">
+                  <!--
+                    <img class="image" src="https://cdn.shopify.com/s/files/1/0161/1184/files/lock-icon.png?v=1654857414" alt=""/>
+                  -->
+                  <svg viewBox="0 0 111 125" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M98.6667 64.7402H12.3333C11.0447 64.7402 10 65.7849 10 67.0736V112.296C10 113.584 11.0447 114.629 12.3333 114.629H98.6667C99.9553 114.629 101 113.584 101 112.296V67.0736C101 65.7849 99.9553 64.7402 98.6667 64.7402ZM12.3333 54.7402C5.52182 54.7402 0 60.2621 0 67.0736V112.296C0 119.107 5.52183 124.629 12.3333 124.629H98.6667C105.478 124.629 111 119.107 111 112.296V67.0736C111 60.2621 105.478 54.7402 98.6667 54.7402H12.3333ZM11.4444 44.4625C11.4444 20.1313 31.1688 0.406926 55.5 0.406926C79.8312 0.406926 99.5555 20.1313 99.5555 44.4625V54.7403H89.5555V44.4625C89.5555 25.6541 74.3084 10.4069 55.5 10.4069C36.6916 10.4069 21.4444 25.6541 21.4444 44.4625V54.7403H11.4444V44.4625Z" fill="white"/>
+                  </svg>
+                </div>
+                <div class="rules-wrapper">
+                  <p>Posts must be made from a public account.</p>
+                </div>
+              </div>
+            </div>
+            <div class="child-col-6">
+              <div class="child-col-wrapper">
+                <div class="svg-wrapper">
+                  <!--
+                    <img class="image" src="https://cdn.shopify.com/s/files/1/0161/1184/files/maginyfing-icon.png?v=1654857414" alt=""/>
+                  -->
+                  <svg viewBox="0 0 25 25" fill="none">
+                    <path d="M0 9.89999V8.99999L0.09 8.22999C0.296597 6.61558 0.918399 5.08235 1.89467 3.78007C2.87094 2.4778 4.16829 1.451 5.66 0.799993C7.44596 0.00503176 9.43751 -0.204974 11.35 0.199993C13.3504 0.605115 15.1609 1.65977 16.5 3.19999C17.8884 4.73501 18.7166 6.69456 18.85 8.75999C19.0249 10.8343 18.4927 12.9066 17.34 14.64C17.2889 14.7139 17.2422 14.7907 17.2 14.87C17.6556 14.9829 18.0668 15.2303 18.38 15.58L23.43 20.64C23.54 20.75 23.65 20.88 23.75 21C24.0073 21.3453 24.1463 21.7644 24.1463 22.195C24.1463 22.6256 24.0073 23.0447 23.75 23.39C23.4182 23.8022 22.9501 24.0824 22.43 24.18H21.91C21.3264 24.0378 20.8041 23.7118 20.42 23.25C18.96 21.78 17.48 20.32 16.02 18.85C15.4723 18.4457 15.0663 17.8787 14.86 17.23L14.65 17.36C13.4727 18.1338 12.1364 18.6328 10.74 18.82C8.95065 19.0736 7.12632 18.7881 5.5 18C4.03855 17.3488 2.77145 16.329 1.82302 15.0404C0.874584 13.7519 0.277384 12.2389 0.09 10.65C0.05 10.4 0 10.15 0 9.89999ZM16.5 9.43999C16.498 8.04394 16.0815 6.67992 15.3034 5.52081C14.5253 4.3617 13.4206 3.4597 12.1293 2.92914C10.838 2.39858 9.41825 2.26334 8.05 2.54058C6.68175 2.81781 5.42661 3.49502 4.44368 4.48639C3.46074 5.47775 2.79426 6.73862 2.52872 8.10919C2.26317 9.47975 2.41052 10.8983 2.95208 12.185C3.49365 13.4718 4.40504 14.5687 5.57075 15.3369C6.73645 16.1051 8.10398 16.5099 9.5 16.5C11.362 16.4842 13.1424 15.7334 14.4534 14.4111C15.7645 13.0888 16.5001 11.3021 16.5 9.43999V9.43999Z" fill="white"/>
+                  </svg>
+                </div>
+                <div class="rules-wrapper">
+                  <p>Show us your Vitaly pieces up close, we love to see the details!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="full-read-link" href="#terms-rules-section">Click to read full Rules, FAQ, and Terms</a>
+        </div>
+      </div>
+    </div>
+    <!-- <h2 class="section-heading">Browse the Community Feed</h2> -->
+    <!-- <p class="community-title">Check out our Community feed for content inspo.</p> -->
+    <div class="row">
+      <div class="col-12">
+        <!--
+          <div class="browes-feed-image-box">
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-6.jpg?v=1655183901" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-7.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-8.jpg?v=1655183512" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-9.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-10.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-11.jpg?v=1655183512" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-12.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-13.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-14.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+            <div class="image-col-wrapper">
+              <div class="image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0161/1184/files/Vitaly-15.jpg?v=1655183511" class="image" alt="Main Image"/>
+              </div>
+            </div>
+          </div>
+        -->
+
+        {% section 'community-feed' %}
+
+        <a class="more-community-link" href="http://vitalydesign.com/pages/community" target="_blank"
+          >See More Community Content</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .terms-rules-section {
+    padding: 60px 0px;
+  }
+
+  .terms-rules-section .container {
+    max-width: 652px;
+  }
+
+  .terms-rules-section .col-wrapper {
+    margin-bottom: 50px;
+  }
+
+  .terms-rules-section .col-wrapper:last-child {
+    margin-bottom: 0px;
+  }
+
+  .terms-rules-section .col-wrapper .section-heading {
+    margin-bottom: 40px;
+  }
+
+  .post-rules-list,
+  .terms-list {
+    margin-left: 24px;
+  }
+
+  .base-data-text {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-bottom: 6px;
+  }
+
+  .terms-rules-section .col-wrapper .base-data-text:last-child {
+    margin-bottom: 0px;
+  }
+
+  .terms-rules-section .qestion {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 26px;
+    letter-spacing: 0.8px;
+    text-align: left;
+    margin-bottom: 5px;
+  }
+
+  .terms-rules-section .answer {
+    font-family: 'Gerstner Programm FSL';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin-bottom: 15px;
+  }
+
+  .terms-rules-section .answer:last-child {
+    margin-bottom: 0px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .terms-rules-section {
+      padding: 40px 0px;
+    }
+
+    .terms-rules-section .container {
+      padding: 0px 25px;
+    }
+
+    .terms-rules-section .col-wrapper {
+      margin-bottom: 40px;
+    }
+
+    .terms-rules-section .col-wrapper .section-heading {
+      margin-bottom: 26px;
+    }
+  }
+
+  @media only screen and (max-width: 375px) {
+    .terms-rules-section .container {
+      padding: 0px 20px;
+    }
+  }
+</style>
+<section class="terms-rules-section" id="terms-rules-section">
+  <div class="container">
+    <div class="col-wrapper">
+      <h2 class="section-heading">Post Rules</h2>
+      <ul class="post-rules-list">
+        <li class="base-data-text">Posts must be made from accounts that are public.</li>
+        <li class="base-data-text">Posts must not be made from accounts with no previous posts.</li>
+        <li class="base-data-text">Post must visibly display Vitaly products.</li>
+        <li class="base-data-text">
+          Post must mention or tag @vitaly on Instagram and @vitalydesign on TikTok. Tags must be visible and clickable.
+        </li>
+        <li class="base-data-text">No competing brands can be featured or tagged in posts.</li>
+        <li class="base-data-text">Posts must be original content; content that has not been posted previously.</li>
+        <li class="base-data-text">Posts must be owned by the creator.</li>
+      </ul>
+    </div>
+    <div class="col-wrapper">
+      <h2 class="section-heading">FAQ</h2>
+
+      <h5 class="qestion">How do I get rewarded?</h5>
+      <p class="answer">
+        On Instagram Ensure you’ve tagged @vitaly and are following the post guidelines. On TikTok, make sure you’re
+        including @vitalydesign in the caption. You will be sent an email to the email you registered with within 24
+        hours of your post being approved.
+      </p>
+
+      <h5 class="qestion">When should I expect rewards?</h5>
+      <p class="answer">Rewards are sent within 24 hours of your post being approved..</p>
+
+      <h5 class="qestion">What is my reward eligible towards?</h5>
+      <p class="answer">
+        You will receive a unique, one-time use code that cannot be combined with other offers. If there are
+        limitations, those will be denoted on this page and/or in the reward email you receive.
+      </p>
+
+      <h5 class="qestion">Can I get rewarded on any other social platforms?</h5>
+      <p class="answer">
+        While we encourage you to share on other platforms, we are only offering rewards for Instagram and TikTok at the
+        moment.
+      </p>
+
+      <h5 class="qestion">Are Instagram Stories included? What about Reels?</h5>
+      <p class="answer">
+        Yes, Reels are eligible for rewards! Stories are not eligible for rewards at this time, however we always love
+        to see what you create on any platform!
+      </p>
+
+      <h5 class="qestion">How do I ensure my post is valid?</h5>
+      <p class="answer">
+        Ensure you are posting from a public account, tagging the correct brand, following the post guidelines listed,
+        and upholding the Terms & Conditions. On Instagram, ensure you’re tagging @vitaly in the caption. On TikTok,
+        ensure you’re tagging @vitalydesign in the caption.
+      </p>
+
+      <h5 class="qestion">Who do I contact if I haven’t received my reward or have questions about the program?</h5>
+      <p class="answer">
+        Please email <a style="text-decoration: none" href="mailto:info@vitalydesign.com">info@vitalydesign.com</a> with
+        any questions!
+      </p>
+    </div>
+    <div class="col-wrapper">
+      <h2 class="section-heading">Terms and Conditions</h2>
+      <ul class="terms-list">
+        <li class="base-data-text">
+          Post must meet all the post rules criteria above in order to be eligible for rewards.
+        </li>
+        <li class="base-data-text">
+          Vitaly has full content rights of ambassador program content and may use reward member content for marketing
+          purposes with no expiration date.
+        </li>
+        <li class="base-data-text">TikTok rewards will be capped at five TikToks per creator.</li>
+        <li class="base-data-text">Only posts made after July 15, 2022 are eligible.</li>
+        <li class="base-data-text">
+          A minimum spend of $100 is required in order to be eligible for the $40 and $50 reward tiers.
+        </li>
+        <li class="base-data-text">Vitaly may update the rewards program at any time.</li>
+      </ul>
+    </div>
+  </div>
+</section>

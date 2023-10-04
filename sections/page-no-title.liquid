@@ -1,0 +1,19 @@
+<style>
+  .klaviyo-form-container {
+    min-height: 250px;
+  }
+</style>
+
+<div class="page-width page-width--narrow main-page">
+  <div class="klaviyo-form-container">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page No Title",
+  "tag": "section",
+  "class": "spaced-section page-no-title-section"
+}
+{% endschema %}

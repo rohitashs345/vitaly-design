@@ -1,0 +1,20 @@
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign variant_inventory_qty = selected_variant.inventory_quantity
+  assign show_warning = false
+  if variant_inventory_qty > 0 and variant_inventory_qty <= settings.low_stock_trigger
+    assign show_warning = true
+  endif
+%}
+<div
+  class="low-stock-warning center{% unless show_warning %} hidden{% endunless %}"
+  data-trigger="{{ settings.low_stock_trigger }}"
+>
+  <em
+    >Only
+    <span class="qty">
+      {{- variant_inventory_qty }} unit{% if variant_inventory_qty > 1 %}s{% endif -%}
+    </span>
+    remaining</em
+  >
+</div>

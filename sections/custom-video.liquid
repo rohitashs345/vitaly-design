@@ -1,0 +1,177 @@
+<style>
+  .video-wrapper {
+    position: relative;
+  }
+  .video-wrapper video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid rgba(var(--color-base-accent-1));
+    cursor: pointer;
+  }
+  .video_icon {
+    color: white;
+    position: absolute;
+    cursor: pointer;
+  }
+  .video_icon-play,
+  .video_icon-pause {
+    top: 3px;
+    right: 30px;
+  }
+  .video_icon-mute,
+  .video_icon-volume {
+    top: 4px;
+    right: 7px;
+  }
+  .video_icon svg {
+    height: 12px;
+    width: 12px;
+  }
+  .video_icon-mute svg,
+  .video_icon-volume svg {
+    height: 15px;
+    width: 15px;
+  }
+  .video_icon-pause,
+  .video_icon-mute {
+    display: none;
+  }
+  .clickToPlay {
+    display: none;
+  }
+
+  @media screen and (min-width: 640px) {
+    .video_icon-play,
+    .video_icon-pause {
+      top: 10px;
+      right: 35px;
+    }
+    .video_icon-mute,
+    .video_icon-volume {
+      top: 11px;
+      right: 10px;
+    }
+  }
+  @media screen and (min-width: 990px) {
+    .video_icon svg {
+      height: 18px;
+      width: 18px;
+    }
+    .video_icon-mute svg,
+    .video_icon-volume svg {
+      height: 21px;
+      width: 21px;
+    }
+    .video_icon-play,
+    .video_icon-pause {
+      right: 40px;
+    }
+    .video_icon-mute,
+    .video_icon-volume {
+      top: 8px;
+      right: 10px;
+    }
+  }
+</style>
+
+<div class="page-width">
+  <div class="video-wrapper">
+    <video
+      class="homepage-video"
+      onclick="this.paused ? this.play() : this.pause();"
+      poster="{{section.settings.cover_image}}"
+      playsinline
+      loop
+      preload="none"
+    >
+      <source
+        src="{{ section.settings.video_url }}"
+        type="video/mp4"
+      >
+      <source
+        src="{{ section.settings.video_url }}"
+        type="video/mp4"
+      >
+    </video>
+    <span class="video_icon video_icon-play">{% render 'icon-play' %}</span>
+    <span class="video_icon video_icon-pause">{% render 'icon-pause' %}</span>
+    <span class="video_icon video_icon-mute">{% render 'icon-mute' %}</span>
+    <span class="video_icon video_icon-volume">{% render 'icon-volume' %}</span>
+  </div>
+</div>
+
+<script>
+  var video = document.querySelector('.homepage-video');
+  var pauseIcon = document.querySelector('.video_icon-pause');
+  var playIcon = document.querySelector('.video_icon-play');
+  var muteIcon = document.querySelector('.video_icon-mute');
+  var volumeIcon = document.querySelector('.video_icon-volume');
+
+  video.addEventListener('click', function () {
+    if (video.paused == false) {
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+    }
+    if (video.paused == true) {
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    }
+  });
+
+  pauseIcon.addEventListener('click', function () {
+    video.pause();
+    pauseIcon.style.display = 'none';
+    playIcon.style.display = 'block';
+    // volumeIcon.style.display = 'none';
+    // muteIcon.style.display = 'none';
+  });
+
+  playIcon.addEventListener('click', function () {
+    video.play();
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+    // if (video.mute = true) {
+    //     muteIcon.style.display = 'block';
+    // } else {
+    //     volumeIcon.style.display = 'block';
+    // }
+  });
+
+  muteIcon.addEventListener('click', function () {
+    video.muted = false;
+    volumeIcon.style.display = 'block';
+    muteIcon.style.display = 'none';
+  });
+
+  volumeIcon.addEventListener('click', function () {
+    video.muted = true;
+    volumeIcon.style.display = 'none';
+    muteIcon.style.display = 'block';
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Custom Video Section",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+      "type": "url",
+      "id": "cover_image",
+      "label": "Video Poster"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Shopify Files Video URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Video Section"
+    }
+  ]
+}
+{% endschema %}

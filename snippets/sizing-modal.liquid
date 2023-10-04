@@ -1,0 +1,44 @@
+<modal-dialog
+  id="PopupModal-{{ block.id }}"
+  class="product-popup-modal product-popup-modal--sizing-guide"
+  {{ block.shopify_attributes }}
+>
+  <div
+    role="dialog"
+    aria-label="{{ block.settings.text_1 }}"
+    aria-modal="true"
+    class="product-popup-modal__content"
+    tabindex="-1"
+  >
+    <button
+      id="ModalClose-{{ block.id }}"
+      type="button"
+      class="product-popup-modal__toggle sizing-guide__close"
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      {% render 'icon-close' %}
+    </button>
+    <div class="product-popup-modal__content-info sizing-guide">
+      <div class="content-info__header">
+        <h3 class="sizing-guide__title">{{ block.settings.title }}</h3>
+        <div class="sizing-guide__subtitle">{{ block.settings.subtitle }}</div>
+        <tab-component>
+          <ul>
+            <li class="sizing-guide__tab-button" aria-role="button" data-tab="button">
+              {{ block.settings.tab_1_name }}
+            </li>
+            <li class="sizing-guide__tab-button" aria-role="button" data-tab="button">
+              {{ block.settings.tab_2_name }}
+            </li>
+          </ul>
+          <div class="sizing-guide__tab-content content-info__with-ring" data-tab="content">
+            {{ block.settings.page_1.content }}
+          </div>
+          <div class="sizing-guide__tab-content content-info__without-ring" data-tab="content">
+            {{ block.settings.page_2.content }}
+          </div>
+        </tab-component>
+      </div>
+    </div>
+  </div>
+</modal-dialog>

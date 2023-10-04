@@ -1,0 +1,40 @@
+{%- style -%}
+  .announcement-bar-popup-modal__content.announcement-bar-popup-modal__content--wishlist {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .announcement-bar-popup-modal__content.announcement-bar-popup-modal__content--wishlist .h3 {
+    margin: 10px 0;
+  }
+{%- endstyle -%}
+
+<wishlist-modal-dialog
+  id="PopupModal-{{ section.id }}"
+  class="announcement-bar-popup-modal"
+  data-customer="{%- if customer -%}true{%- else -%}false{%- endif -%}"
+  {{ section.shopify_attributes }}
+>
+  <div
+    role="dialog"
+    aria-label="{{ section.settings.text_1 }}"
+    aria-modal="true"
+    class="announcement-bar-popup-modal__content announcement-bar-popup-modal__content--wishlist"
+    tabindex="-1"
+  >
+    <button
+      id="ModalClose-{{ section.id }}"
+      type="button"
+      class="announcement-bar-popup-modal__toggle sizing-guide__close"
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      {% render 'icon-close' %}
+    </button>
+    <div class="h3"><span data-product-title>Product</span> added to wishlist!</div>
+    {%- if settings.wishlist_popup_text != blank -%}
+      {{ settings.wishlist_popup_text }}
+    {%- endif -%}
+  </div>
+</wishlist-modal-dialog>

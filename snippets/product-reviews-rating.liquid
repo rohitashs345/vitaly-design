@@ -1,0 +1,41 @@
+{% liquid
+  assign reviews_count = product.metafields.stamped.reviews_count
+  assign average_rating = product.metafields.stamped.reviews_average | round: 2
+%}
+{% if reviews_count %}
+  <div class="product-rating-top">
+    <span>{{ reviews_count }} Reviews</span>
+    <span
+      class="stamped-starratings stamped-review-header-starratings"
+      role="list"
+      data-rating="{{ average_rating }}"
+      aria-label="5-Star Rating Review"
+    >
+      <i class="stamped-fa stamped-fa-star"></i>
+      <i class="stamped-fa stamped-fa-star"></i>
+      <i class="stamped-fa stamped-fa-star"></i>
+      <i class="stamped-fa stamped-fa-star"></i>
+      <i class="stamped-fa stamped-fa-star"></i>
+    </span>
+  </div>
+{% endif %}
+
+<script>
+  (() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.product-rating-top').forEach(($rating) => {
+        $rating.addEventListener('click', (e) => {
+          e.preventDefault();
+          let $sectionReviews = document.querySelector('#stamped-main-widget');
+          if ($sectionReviews) {
+            let top = $sectionReviews.offsetTop - 80;
+            window.scrollTo({
+              top: top,
+              behavior: 'smooth',
+            });
+          }
+        });
+      });
+    });
+  })();
+</script>

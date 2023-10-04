@@ -1,0 +1,146 @@
+{{ 'section-marquee.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  if section.settings.link != blank
+    assign marquee_element = 'a'
+    assign marquee_link = section.settings.link
+  else
+    assign marquee_element = 'span'
+  endif
+-%}
+
+<div class="marquee-section marquee-section--{{ section.id }}" role="region" aria-label="Marquee">
+  {% assign marquee_element = marquee_element | default: 'span' %}
+
+  <marquee-element class="marquee {{ classes }}" {{ attrs }} tabindex="0" role="button" data-marquee>
+    <{{ marquee_element }}{% if marquee_link != blank %} href="{{ marquee_link }}" title="Marquee Link"{% endif %} class="marquee__content">
+      {%- for i in (1..16) -%}
+        <span>
+          {{ section.settings.content }}
+          {%- if section.settings.separator_icon != blank -%}
+            {{ section.settings.separator_icon | image_url: width: 100 | image_tag: class: 'marquee__separator-icon' }}
+          {%- endif -%}
+        </span>
+      {%- endfor -%}
+    </{{ marquee_element }}>
+
+    <button class="marquee__movement" aria-label="Toggle marquee movement" data-marquee-movement>
+      {% render 'icon-pause' %}
+      {% render 'icon-play' %}
+    </button>
+  </marquee-element>
+</div>
+
+{%- style -%}
+  .marquee-section--{{ section.id }} {
+    --marquee-background-color: {{ section.settings.background_color }};
+    --marquee-text-color: {{ section.settings.text_color }};
+    --marquee-speed: {{ section.settings.speed }}s;
+    --marquee-separator-icon-width: {{ section.settings.separator_icon_width }}px;
+    --marquee-padding-top: {{ section.settings.padding_top }}px;
+    --marquee-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<script>
+  (() => {
+    if (typeof window.customElements.get('marquee-element') !== 'undefined') { return }
+    window.customElements.define('marquee-element', class CustomHtmlElement extends HTMLElement {
+      constructor () {
+        super()
+  
+        this.trigger = this.querySelector('[data-marquee-movement]')
+  
+        this.trigger.addEventListener('click', () => {
+          this.classList.toggle('animation-paused')
+        })
+      }
+    })
+  })()
+</script>
+
+{% schema %}
+{
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Colour",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 12
+    },
+    {
+      "type": "number",
+      "id": "speed",
+      "label": "Speed",
+      "default": 10,
+      "info": "Duration of animation in seconds. Higher the number the slower the scroll speed"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "content",
+      "label": "Content",
+      "default": "Vitaly"
+    },
+    {
+      "type": "image_picker",
+      "id": "separator_icon",
+      "label": "Separator icon"
+    },
+    {
+      "type": "range",
+      "id": "separator_icon_width",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Separator icon width",
+      "default": 14
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "Optional. Link will apply to the content if set."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,172 @@
+<link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'section-rich-text.css' | asset_url }}" media="print" onload="this.media='all'">
+<link
+  rel="stylesheet"
+  href="{{ 'section-wide-brand-callout.css' | asset_url }}"
+  media="print"
+  onload="this.media='all'"
+>
+
+<noscript>{{ 'component-rte.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'section-rich-text.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'section-wide-brand-callout.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="{% unless section.settings.full_width %}page-width{% endunless %}">
+  <div class="wide-brand-callout color-{{ section.settings.color_scheme }} {% if section.settings.full_width %} rich-text--full-width{% endif %}">
+    <div class="wide-brand-callout__blocks">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'heading' -%}
+            <div class="wide-brand-callout__block-wrapper wide-brand-callout__logo-and-heading">
+              {%- if block.settings.logo != blank -%}
+                <img
+                  src="{{ block.settings.logo | img_url: image_size }}"
+                  loading="lazy"
+                  class="wide-brand-callout__logo"
+                  width="{{ block.settings.logo.width }}"
+                  height="{{ block.settings.logo.height }}"
+                  alt="{{ block.settings.logo.alt | default: shop.name | escape }} logo"
+                >
+              {%- endif -%}
+              <h2 class="{{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
+                {{ block.settings.logo_heading | escape }}
+              </h2>
+            </div>
+          {%- when 'text' -%}
+            <div class="wide-brand-callout__block-wrapper wide-brand-callout__heading-and-text {% if section.blocks.size == 1 %}text-and-heading__single{% endif %}">
+              <h2 class="{{ block.settings.heading_size }}" {{ block.shopify_attributes }}>
+                {{ block.settings.text_heading | escape }}
+              </h2>
+              <div class="rich-text__text rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Wide Brand Callout",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width id-brand-callout",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.rich-text.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.rich-text.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.rich-text.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.rich-text.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.rich-text.settings.color_scheme.options__5.label"
+        }
+      ],
+      "default": "background-1",
+      "label": "t:sections.rich-text.settings.color_scheme.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": true,
+      "label": "t:sections.rich-text.settings.full_width.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.rich-text.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "logo_heading",
+          "default": "Talk about your brand",
+          "label": "Logo heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "h2",
+              "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__1.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__2.label"
+            },
+            {
+              "value": "h0",
+              "label": "t:sections.rich-text.blocks.heading.settings.heading_size.options__3.label"
+            }
+          ],
+          "default": "h1",
+          "label": "t:sections.rich-text.blocks.heading.settings.heading_size.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "t:sections.header.settings.logo.label"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 10,
+          "max": 250,
+          "step": 10,
+          "default": 100,
+          "unit": "t:sections.header.settings.logo_width.unit",
+          "label": "t:sections.header.settings.logo_width.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.rich-text.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text_heading",
+          "default": "Talk about your brand",
+          "label": "Text heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+          "label": "t:sections.rich-text.blocks.text.settings.text.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wide Brand Callout",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

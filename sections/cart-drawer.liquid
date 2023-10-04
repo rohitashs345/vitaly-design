@@ -1,0 +1,468 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-mini-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .sfl-wrapper {
+    display: block;
+    height: 100%;
+  }
+
+  .cart__tab-buttons {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cart__tab-button {
+    padding: 18px 18px 12px 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 16px;
+    color: gray;
+  }
+
+  .cart__tab-button.cart__tab-button--sfl {
+    display: none;  
+  }
+
+  .swym-ready .cart__tab-button.cart__tab-button--sfl {
+    display: block;
+  }
+
+  .cart__tab-button:hover {
+    /* migrate to TS */
+    color: black;
+  }
+
+  .cart__tab-button.active {
+    /* migrate to TS */
+    border-bottom: 2px solid black;
+    color: black;
+  }
+
+  .cart-drawer__tab-content {
+    display: none;
+    /* width: 100%; */
+    height: calc(100% - 58px);
+  }
+
+  .cart-drawer__tab-content-inner,
+  .cart-drawer__tab-content.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-drawer__tab-content-inner {
+    height: 100%;
+  }
+
+  .cart-with-sfl__messages {
+    padding: 0 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .cart-with-sfl__message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ section.settings.message_background_color -}};
+    border: 1px solid {{ section.settings.message_border_color -}};
+    color: {{ section.settings.message_text_color -}};
+    text-transform: uppercase;
+    transition: all 0.3s ease-in;
+    opacity: 0;
+    transform: translateY(-100%);
+    padding: 10px;
+    line-height: 1.8rem;
+  }
+
+  .cart-with-sfl__message.show {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  .cart-with-sfl__message span {
+    text-decoration: underline;
+  }
+
+  .cart-with-sfl {
+    height: 100%;
+    display: block;
+  }
+
+  .drawer__inner-empty.drawer__inner-empty--sfl,
+  .cart-drawer__empty-content {
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: center;
+    height: 100%;
+  }
+
+  .cart-drawer__empty-state-collection-link {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .sfl-footer__link {
+    text-transform: underline;
+    color: inherit;
+  }
+
+  .cart__footer.cart__footer--sfl {
+    background-color: {{ section.settings.sfl_footer_background_color -}};
+    color: {{ section.settings.sfl_footer_text_color -}};
+  }
+
+  .cart-drawer__aftership-wrapper {
+    flex: auto;
+    overflow-y: auto;
+  }
+
+  .is-empty + [data-personalization-id] {
+    display: none;
+  }
+
+  body {
+    --progress-bar-background-color: {{ section.settings.progress_bar_background_color }};
+    --progress-bar-text-color: {{ section.settings.progress_bar_text_color }}; 
+    --progress-bar-outer-bar-color: {{ section.settings.progress_bar_outer_bar_color }};
+    --progress-bar-inner-bar-color: {{ section.settings.progress_bar_inner_bar_color }};
+  }
+{% endstyle %}
+
+<div id="cart-drawer" class="cart-drawer">
+  <sfl-wrapper class="sfl-wrapper">
+    <div id="mini-cart-header" class="cart-drawer-header page-width">
+      <ul class="cart__tab-buttons">
+        <li class="cart__tab-button" aria-role="button" data-tab="button">Cart</li>
+        <li
+          class="cart__tab-button cart__tab-button--sfl"
+          aria-role="button"
+          data-tab="button"
+          data-sfl-fetch-trigger
+        >
+          Save for later
+        </li>
+      </ul>
+      <button class="cart-close sub-menu__close" aria-label="{{ 'accessibility.close' | t }}">X <span class="cart-close__text">Close</span></button>
+    </div>
+
+    <div class="cart-drawer__tab-content" data-tab="content">
+      <div class="cart-with-sfl__messages" data-sfl-message="cart"></div>
+      <div class="cart-drawer__tab-content-inner">
+        <div class="cart-drawer__aftership-wrapper">
+          {%- render 'main-cart-snippet' -%}
+          {%- if settings.aftership_personalization_id != blank -%}
+            <div data-personalization-id="{{ settings.aftership_personalization_id }}" apz_stay_same_page=""></div>
+          {%- endif -%}
+        </div>
+        <div class="{% if cart == empty %}is-empty{% endif %}" id="cart-drawer-footer" data-cart-footer>
+          <div class="cart__footer">
+            <div class="cart__blocks">
+              <div class="js-contents">
+                <div class="totals">
+                  <h4 class="totals__subtotal">{{ 'sections.cart.subtotal' | t }}:</h4>
+                  <p class="totals__subtotal-value">{{ cart.total_price | money_with_currency }}</p>
+                </div>
+                <div>
+                  {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                      {%- for discount in cart.cart_level_discount_applications -%}
+                        <li class="discounts__discount discounts__discount--end">
+                          {%- render 'icon-discount' -%}
+                          {{ discount.title }}
+                          (-{{ discount.total_allocated_amount | money }})
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+              </div>
+              <div class="cart__ctas" {{ block.shopify_attributes }}>
+                <noscript>
+                  <button type="submit" class="cart__update-button button button--secondary" form="cart">
+                    {{ 'sections.cart.update' | t }}
+                  </button>
+                </noscript>
+
+                <button
+                  type="submit"
+                  id="checkout"
+                  class="cart__checkout-button button"
+                  name="checkout"
+                  {% if cart == empty %}
+                    disabled
+                  {% endif %}
+                  form="cart"
+                >
+                  <!-- {{ 'sections.cart.checkout' | t }} -->
+                  secure checkout 🔒
+                </button>
+              </div>
+              <div id="cart-errors"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cart-drawer__tab-content" data-tab="content">
+      <div class="cart-with-sfl__messages" data-sfl-message="sfl"></div>
+      <div class="drawer__inner-empty drawer__inner-empty--sfl hidden" data-empty-sfl>
+        <h2 class="sfl__empty-text">{{ section.settings.cart_sfl_empty_state_headline }}</h2>
+        {%- if section.settings.cart_sfl_empty_link_url != blank
+          and section.settings.cart_sfl_empty_button_text != blank
+        -%}
+          {{-
+            section.settings.cart_sfl_empty_button_text
+            | link_to: section.settings.cart_sfl_empty_link_url,
+              class: 'button cart-drawer__empty-state-collection-link'
+          -}}
+        {%- endif -%}
+      </div>
+      <cart-sfl>
+        <table class="cart-items" role="table">
+          <tbody role="rowgroup" data-render-sfl></tbody>
+        </table>
+      </cart-sfl>
+      {%- unless customer -%}
+        <div class="cart__footer cart__footer--sfl">
+          <div class="cart__blocks sfl__footer-inner">{{ 'Sign in' | link_to: routes.account_login_url, class: 'sfl-footer__link' }} or {{ 'create an account' | link_to: routes.account_register_url, class: 'sfl-footer__link' }} before you lose your products.</div>
+        </div>
+      {%- endunless -%}
+    </div>
+  </sfl-wrapper>
+</div>
+
+<script>
+  class CartNote extends HTMLElement {
+    constructor() {
+      super();
+
+      this.addEventListener(
+        'change',
+        debounce((event) => {
+          const body = JSON.stringify({ note: event.target.value });
+          fetch(`${routes.cart_update_url}`, { ...fetchConfig(), ...{ body } });
+        }, 300)
+      );
+    }
+  }
+
+  customElements.define('cart-note', CartNote);
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    function isIE() {
+      const ua = window.navigator.userAgent;
+      const msie = ua.indexOf('MSIE ');
+      const trident = ua.indexOf('Trident/');
+
+      return msie > 0 || trident > 0;
+    }
+
+    if (!isIE()) return;
+    const cartSubmitInput = document.createElement('input');
+    cartSubmitInput.setAttribute('name', 'checkout');
+    cartSubmitInput.setAttribute('type', 'hidden');
+    document.querySelector('#cart').appendChild(cartSubmitInput);
+    document.querySelector('#checkout').addEventListener('click', function (event) {
+      document.querySelector('#cart').submit();
+    });
+  });
+</script>
+
+<span class="cart-bg"></span>
+
+{% schema %}
+{
+  "name": "Cart Drawer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Cart Empty State"
+    },
+    {
+      "type": "textarea",
+      "id": "cart_drawer_empty_state_headline",
+      "label": "Headline text",
+      "default": "<p>Your cart is empty<\/p>"
+    },
+    {
+      "type": "header",
+      "content": "Save For Later Empty State"
+    },
+    {
+      "type": "textarea",
+      "id": "cart_sfl_empty_state_headline",
+      "label": "Headline text",
+      "default": "<p>Your Save For Later is empty<\/p>"
+    },
+    {
+      "type": "url",
+      "id": "cart_sfl_empty_link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "cart_sfl_empty_button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "header",
+      "content": "Cart Messages"
+    },
+    {
+      "type": "color", 
+      "id": "message_text_color",
+      "label": "Message text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color", 
+      "id": "message_background_color",
+      "label": "Message background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color", 
+      "id": "message_border_color",
+      "label": "Message border color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Save For Later Footer"
+    },
+    {
+      "type": "color", 
+      "id": "sfl_footer_text_color",
+      "label": "Message text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color", 
+      "id": "sfl_footer_background_color",
+      "label": "Message background color",
+      "default": "#0000FF"
+    },
+    {
+      "type": "header",
+      "content": "Progress Bar"
+    },
+    {
+      "type": "checkbox", 
+      "id": "progress_bar_enabled", 
+      "label": "Enable progress bar", 
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "progress_bar_proportion",
+      "options": [
+        {
+          "value": "proportional",
+          "label": "Proportional"
+        },
+        {
+          "value": "equidistant",
+          "label": "Equidistant"
+        }
+      ],
+      "default": "equidistant",
+      "label": "Proportion"
+    },
+    {
+      "type": "color", 
+      "id": "progress_bar_background_color", 
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color", 
+      "id": "progress_bar_text_color", 
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color", 
+      "id": "progress_bar_outer_bar_color", 
+      "label": "Outer bar color",
+      "default": "#d3d3d3"
+    },
+    {
+      "type": "color", 
+      "id": "progress_bar_inner_bar_color", 
+      "label": "Inner bar color",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "info": "Defaults to Collection Title if left blank."
+        }
+      ]
+    },
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text"
+        }
+      ]
+    },
+    { 
+      "type": "bar_promotion",
+      "name": "Progress Bar Promotion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "promotion_title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "promotion_message_text",
+          "label": "Message Text",
+          "info": "Required. This will appear on the message."
+        },
+        {
+          "type": "text",
+          "id": "promotion_threshold",
+          "label": "Threshold",
+          "info": "Required. In the store's currency."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

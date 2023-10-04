@@ -1,0 +1,65 @@
+<script defer>
+  function swymCallbackFn(swat) {
+    if (localStorage.getItem('isAddedToCart')) {
+      document.getElementById('cart-icon-bubble').click();
+      localStorage.removeItem('isAddedToCart');
+    }
+
+    {% comment %} TO DO : CARLOS : Should re-render cart only not refresh page. {% endcomment %}
+    swat.evtLayer.addEventListener(swat.JSEvents.UIAddedToCart, function (e) {
+      {% comment %} 
+        const cartDrawer = document.querySelector('cart-drawer');
+
+        const sectionsToRender = [
+          {
+            id: "cart-drawer",
+            selector: "#CartDrawer .js-contents",
+          },
+          {
+            id: "cart-drawer",
+            selector: "#CartDrawer-Footer .js-contents-inner",
+          },
+          {
+            id: "cart-icon-bubble",
+          },
+        ];
+
+        const body = JSON.stringify({
+          sections: sectionsToRender.map((section) => section.section),
+          sections_url: window.location.pathname,
+        });
+
+        fetch(`https://www.clocksandcolours.com/cart.js`, { ...fetchConfig(), ...{ body } })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.status) {
+            this.handleErrorMessage(response.description);
+          } else if (cartDrawer == null) {
+            window.location = window.routes.cart_url;
+            return;
+          }
+          console.log('[SFL] Response from add to cart wishlist: ', response);
+
+          cartDrawer.renderContents(response);
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => {
+        }); 
+      {% endcomment %}  
+
+      window.location.reload();
+      localStorage.setItem('isAddedToCart', true);
+    });
+    {% comment %} swat.evtLayer.addEventListener(swat.JSEvents.movedToCartFromSFL, function (e) {
+      window.location.reload();
+    }); {% endcomment %}
+  }
+
+  if (!window.SwymCallbacks) {
+    window.SwymCallbacks = [];
+  }
+
+  window.SwymCallbacks.push(swymCallbackFn);
+</script>

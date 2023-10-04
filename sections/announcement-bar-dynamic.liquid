@@ -1,0 +1,579 @@
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'announcement-bar-dynamic.css' | asset_url | stylesheet_tag }}
+
+<div class="announcement-bar-dynamic" role="region" aria-label="{{ 'sections.header.announcement' | t }}" {{ section.shopify_attributes }}>
+  {% if section.settings.show_popup == true %}
+    <modal-opener
+      class="announcement-bar-dynamic-popup__opener no-js-hidden"
+      data-modal="#PopupModal-{{ section.id }}"
+      {{ section.shopify_attributes }}
+    >
+      <button
+        id="ProductPopup-{{ section.id }}"
+        class="announcement-bar-popup__button animate-arrow"
+        type="button"
+        aria-haspopup="dialog"
+      >
+        {{ section.settings.popup_link_text }}
+        {% if section.settings.show_promotions_count %}
+          ({{ section.blocks.size }})
+        {% endif %}
+        {% render 'icon-arrow' %}
+      </button>
+    </modal-opener>
+
+    <modal-dialog
+      id="PopupModal-{{ section.id }}"
+      class="announcement-bar-popup-modal"
+      {{ section.shopify_attributes }}
+    >
+      <div
+        role="dialog"
+        aria-label="{{ section.settings.text_1 }}"
+        aria-modal="true"
+        class="announcement-bar-popup-modal__content"
+        tabindex="-1"
+      >
+        <button
+          id="ModalClose-{{ section.id }}"
+          type="button"
+          class="announcement-bar-popup-modal__toggle sizing-guide__close"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {% render 'icon-close' %}
+        </button>
+        {% if section.settings.popup_heading != blank %}
+          <div class="announcement-bar-popup__heading">{{ section.settings.popup_heading }}</div>
+        {% endif %}
+    
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'announcement' -%}
+              <div class="promo">
+                {% if block.settings.popup_promo_title != blank %}
+                  <div class="promo__title">
+                    {{ block.settings.popup_promo_title }}
+                    {% if block.settings.show_countdown == true and block.settings.countdown_date != blank and block.settings.countdown_time != blank %} 
+                      <countdown-timer 
+                        class="announcement-bar-dynamic__timer" 
+                        {% if block.settings.countdown_date != blank %}
+                          data-timer-end-date="{{ block.settings.countdown_date }}"
+                        {% endif %}
+                        {% if block.settings.countdown_time != blank %}
+                          data-timer-end-time="{{ block.settings.countdown_time }}"
+                        {% endif %}
+                      >
+                        {% if block.settings.show_days == true -%}<span data-timer="days">00</span><span class="timer__units">d :</span>{%- endif -%}
+                        <span data-timer="hours" class="timer__numbers">00</span><span class="timer__units">h :</span>
+                        <span data-timer="minutes" class="timer__numbers">00</span><span class="timer__units">m :</span>
+                        <span data-timer="seconds" class="timer__numbers">00</span><span class="timer__units">s</span> 
+                      </countdown-timer>
+                    {% endif %}
+                  </div>
+                {% endif %}
+        
+                {% if block.settings.popup_promo_description != blank %}
+                  <div class="promo__description">{{ block.settings.popup_promo_description }}</div>
+                {% endif %}
+                {% if block.settings.popup_promo_link != blank %}
+                  <div>{{ block.settings.popup_promo_link_text | link_to: block.settings.popup_promo_link }}</div>
+                {% endif %}
+              </div>
+            {%- when 'ship_scout' -%}
+              {%- liquid 
+                assign is_ship_scout_test_running = false
+                if localization.country.iso_code == 'US'
+                  assign is_ship_scout_test_running = true
+                endif 
+
+                assign full_title = block.settings.popup_promo_title_default
+                assign full_description = block.settings.popup_promo_description_default
+
+                if block.settings.popup_promo_title != blank and is_ship_scout_test_running
+                  assign full_title = block.settings.popup_promo_title | split: '<$>'
+                endif
+                if block.settings.popup_promo_description != blank and is_ship_scout_test_running
+                  assign description = block.settings.popup_promo_description | split: '<$>'
+                  assign full_description = description[0] | append: '<span data-ship-scout-amount></span>' | append: description[1]
+                endif
+                -%}
+              <div class="promo">
+                {% if full_title != blank %}
+                  <div class="promo__title">
+                    {{ full_title }}
+                    {% if block.settings.show_countdown == true and block.settings.countdown_date != blank and block.settings.countdown_time != blank %} 
+                      <countdown-timer 
+                        class="announcement-bar-dynamic__timer" 
+                        {% if block.settings.countdown_date != blank %}
+                          data-timer-end-date="{{ block.settings.countdown_date }}"
+                        {% endif %}
+                        {% if block.settings.countdown_time != blank %}
+                          data-timer-end-time="{{ block.settings.countdown_time }}"
+                        {% endif %}
+                      >
+                        {% if block.settings.show_days == true -%}<span data-timer="days">00</span><span class="timer__units">d :</span>{%- endif -%}
+                        <span data-timer="hours" class="timer__numbers">00</span><span class="timer__units">h :</span>
+                        <span data-timer="minutes" class="timer__numbers">00</span><span class="timer__units">m :</span>
+                        <span data-timer="seconds" class="timer__numbers">00</span><span class="timer__units">s</span> 
+                      </countdown-timer>
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {% if full_description != blank %}
+                  <div class="promo__description">{{ full_description }}</div>
+                {% endif %}
+
+                {% if block.settings.popup_promo_link != blank %}
+                  <div>{{ block.settings.popup_promo_link_text | link_to: block.settings.popup_promo_link }}</div>
+                {% endif %}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+    
+      </div>
+    </modal-dialog>
+  {% endif %}
+
+  <slideshow-component
+    class="slider-mobile-gutter"
+    role="region"
+    aria-roledescription="{{ 'sections.slideshow.carousel' | t }}"
+    aria-label="{{ section.settings.accessibility_info | escape }}"
+  >
+    <button
+      type="button"
+      class="slider-button slider-button--prev"
+      name="previous"
+      aria-label="{{ 'sections.slideshow.previous_slideshow' | t }}"
+      aria-controls="Slider-{{ section.id }}"
+    >
+      {% render 'icon-caret' %}
+    </button>
+    <div
+      class="slideshow grid grid--1-col slider slider--everywhere"
+      id="Slider-{{ section.id }}"
+      aria-live="polite"
+      aria-atomic="true"
+      data-autoplay="{{ section.settings.auto_rotate }}"
+      data-speed="{{ section.settings.change_slides_speed }}"
+    >
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'announcement' -%}
+            {%- if block.settings.announcement_bar_text != blank -%}
+              <div
+                class="slideshow__slide grid__item grid--1-col slider__slide"
+                id="Slide-{{ section.id }}-{{ forloop.index }}"
+                {{ block.shopify_attributes }}
+                role="group"
+                aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+                aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length}}"
+                tabindex="-1"
+              >
+                {%- if block.settings.announcement_bar_link != blank -%}
+                  <a href="{{ block.settings.announcement_bar_link }}" class="announcement-bar-dynamic__link">
+                {%- endif -%}
+                  <div class="announcement-bar-dynamic__message">
+                    {{ block.settings.announcement_bar_text | escape }}
+                  </div>  
+                {%- if block.settings.announcement_bar_link != blank -%}
+                  </a>
+                {%- endif -%}
+
+                {% if block.settings.show_countdown == true and block.settings.countdown_date != blank and block.settings.countdown_time != blank %} 
+                    <countdown-timer 
+                      class="announcement-bar-dynamic__timer" 
+                      {% if block.settings.countdown_date != blank %}
+                        data-timer-end-date="{{ block.settings.countdown_date }}"
+                      {% endif %}
+                      {% if block.settings.countdown_time != blank %}
+                        data-timer-end-time="{{ block.settings.countdown_time }}"
+                      {% endif %}
+                    >
+                      {% if block.settings.show_days == true -%}<span data-timer="days">00</span><span class="timer__units">d :</span>{%- endif -%}
+                      <span data-timer="hours" class="timer__numbers">00</span><span class="timer__units">h :</span>
+                      <span data-timer="minutes" class="timer__numbers">00</span><span class="timer__units">m :</span>
+                      <span data-timer="seconds" class="timer__numbers">00</span><span class="timer__units">s</span> 
+                    </countdown-timer>
+                {% endif %}
+              </div>
+            {%- endif -%}
+          {%- when 'ship_scout' -%}
+            {%- liquid 
+              assign is_ship_scout_test_running = false
+              if localization.country.iso_code == 'US'
+                assign is_ship_scout_test_running = true
+              endif 
+
+              assign full_announcement_bar_text = block.settings.announcement_bar_text_default 
+
+              if block.settings.announcement_bar_text != blank and is_ship_scout_test_running
+                assign announcement_bar_text = block.settings.announcement_bar_text | split: '<$>'
+                assign full_announcement_bar_text = announcement_bar_text[0] | append: '<span data-ship-scout-amount></span>' | append: announcement_bar_text[1]
+              endif
+              -%}
+              {%- if full_announcement_bar_text != blank -%}
+                <div
+                  class="slideshow__slide grid__item grid--1-col slider__slide"
+                  id="Slide-{{ section.id }}-{{ forloop.index }}"
+                  {{ block.shopify_attributes }}
+                  role="group"
+                  aria-roledescription="{{ 'sections.slideshow.slide' | t }}"
+                  aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length}}"
+                  tabindex="-1"
+                  {% if is_ship_scout_test_running -%}
+                    data-ship-scout-announcement
+                  {%- endif -%}
+                >
+                  {%- if block.settings.announcement_bar_link != blank -%}
+                    <a href="{{ block.settings.announcement_bar_link }}" class="announcement-bar-dynamic__link">
+                  {%- endif -%}
+                    <div class="announcement-bar-dynamic__message">
+                      {{ full_announcement_bar_text }}
+                    </div>  
+                  {%- if block.settings.announcement_bar_link != blank -%}
+                    </a>
+                  {%- endif -%}
+  
+                  {% if block.settings.show_countdown == true and block.settings.countdown_date != blank and block.settings.countdown_time != blank %} 
+                      <countdown-timer 
+                        class="announcement-bar-dynamic__timer" 
+                        {% if block.settings.countdown_date != blank %}
+                          data-timer-end-date="{{ block.settings.countdown_date }}"
+                        {% endif %}
+                        {% if block.settings.countdown_time != blank %}
+                          data-timer-end-time="{{ block.settings.countdown_time }}"
+                        {% endif %}
+                      >
+                        {% if block.settings.show_days == true -%}<span data-timer="days">00</span><span class="timer__units">d :</span>{%- endif -%}
+                        <span data-timer="hours" class="timer__numbers">00</span><span class="timer__units">h :</span>
+                        <span data-timer="minutes" class="timer__numbers">00</span><span class="timer__units">m :</span>
+                        <span data-timer="seconds" class="timer__numbers">00</span><span class="timer__units">s</span> 
+                      </countdown-timer>
+                  {% endif %}
+                </div>
+              {%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    <button
+      type="button"
+      class="slider-button slider-button--next"
+      name="next"
+      aria-label="{{ 'sections.slideshow.next_slideshow' | t }}"
+      aria-controls="Slider-{{ section.id }}"
+    >
+      {% render 'icon-caret' %}
+    </button>
+  
+    {%- if section.blocks.size > 1 -%}
+      <div class="slideshow__controls slider-buttons no-js-hidden">
+        <div 
+          class="slider-counter slider-counter--counter caption"
+          style="display:none;"
+        >
+          <span class="slider-counter--current">1</span>
+          <span aria-hidden="true"> / </span>
+          <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+          <span class="slider-counter--total">{{ section.blocks.size }}</span>
+        </div>
+  
+        {%- if section.settings.auto_rotate -%}
+          <button
+            type="button"
+            style="display:none;"
+            class="slideshow__autoplay slider-button no-js-hidden{% if section.settings.auto_rotate == false %} slideshow__autoplay--paused{% endif %}"
+            aria-label="{{ 'sections.slideshow.pause_slideshow' | t }}"
+          >
+            {%- render 'icon-pause' -%}
+            {%- render 'icon-play' -%}
+          </button>
+        {%- endif -%}
+      </div>
+  
+      <noscript>
+        <div class="slider-buttons">
+          <div class="slider-counter">
+            {%- for block in section.blocks -%}
+              <a
+                href="#Slide-{{ section.id }}-{{ forloop.index }}"
+                class="slider-counter__link link"
+                aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length}}"
+              >
+                {{ forloop.index }}
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      </noscript>
+    {%- endif -%}
+  </slideshow-component>
+</div>
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+    color: {{ section.settings.color }};
+  }
+
+  .announcement-bar-popup-modal {
+    --announcement-bar-dynamic-popup-color: {{ section.settings.popup_color }};;
+    --announcement-bar-dynamic-popup-background: {{ section.settings.popup_background_color }};
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar-dynamic.name",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "header", 
+      "content": "Announcentment Bar" 
+    },
+    {
+      "type": "color", 
+      "id": "background_color", 
+      "label": "t:sections.announcement-bar-dynamic.settings.background_color.label",
+      "default": "#000000"
+    },
+    {
+      "type": "color", 
+      "id": "color", 
+      "label": "t:sections.announcement-bar-dynamic.settings.color.label",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text", 
+      "id": "popup_link_text", 
+      "label": "t:sections.announcement-bar-dynamic.settings.popup_link_text.label",
+      "default": "View all offers"
+    },
+    {
+      "type": "checkbox", 
+      "id": "show_promotions_count",
+      "label": "t:sections.announcement-bar-dynamic.settings.show_promotions_count.label", 
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "t:sections.slideshow.settings.auto_rotate.label",
+      "default": true
+    },    
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 3,
+      "max": 9,
+      "step": 2,
+      "unit": "s",
+      "label": "t:sections.slideshow.settings.change_slides_speed.label",
+      "default": 5
+    },
+    {
+      "type": "header", 
+      "content": "Popup" 
+    },
+    {
+      "type": "checkbox", 
+      "id": "show_popup", 
+      "label": "Show popup", 
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "popup_heading",
+      "label": "t:sections.announcement-bar-dynamic.settings.popup_heading.label"
+    },
+    {
+      "type": "color", 
+      "id": "popup_background_color", 
+      "label": "t:sections.announcement-bar-dynamic.settings.popup_background_color.label",
+      "default": "#000000"
+    },
+    {
+      "type": "color", 
+      "id": "popup_color", 
+      "label": "t:sections.announcement-bar-dynamic.settings.popup_color.label",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:sections.announcement-bar-dynamic.blocks.announcement.name",
+      "settings": [
+        {
+          "type": "header", 
+          "content": "Announcement Bar"
+        },
+        {
+          "type": "text",
+          "id": "announcement_bar_text",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.announcement_bar_text.label"
+        },
+        {
+          "type": "url",
+          "id": "announcement_bar_link",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.announcement_bar_link.label"
+        },
+        {
+          "type": "header", 
+          "content": "Countdown"
+        },
+        {
+          "type": "checkbox", 
+          "id": "show_countdown", 
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.show_countdown.label",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "countdown_date",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_date.label",
+          "info": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_date.info"
+        },
+        {
+          "type": "text",
+          "id": "countdown_time",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_time.label",
+          "info": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_time.info",
+          "default": "00:00:00"
+        },
+        {
+          "type": "checkbox", 
+          "id": "show_days", 
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.show_days.label",
+          "default": false
+        },
+        {
+          "type": "header", 
+          "content": "Popup"
+        },
+        {
+          "type": "text",
+          "id": "popup_promo_title",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_title.label"
+        },
+        {
+          "type": "textarea",
+          "id": "popup_promo_description",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_description.label"
+        },
+        {
+          "type": "text",
+          "id": "popup_promo_link_text",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_link_text.label"
+        },
+        {
+          "type": "url",
+          "id": "popup_promo_link",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_link.label"
+        }
+      ]
+    },
+    {
+      "type": "ship_scout",
+      "name": "Ship Scout",
+      "settings": [
+        {
+          "type": "header", 
+          "content": "Announcement Bar"
+        },
+        {
+          "type": "text",
+          "id": "announcement_bar_text_default",
+          "label": "Text Default",
+          "info": "Will show when not in Ship Scout locale"
+        },
+        {
+          "type": "text",
+          "id": "announcement_bar_text",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.announcement_bar_text.label",
+          "info": "Use <$> to as a placeholder for Ship Scout treshold amount"
+        },
+        {
+          "type": "url",
+          "id": "announcement_bar_link",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.announcement_bar_link.label"
+        },
+        {
+          "type": "header", 
+          "content": "Countdown"
+        },
+        {
+          "type": "checkbox", 
+          "id": "show_countdown", 
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.show_countdown.label",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "countdown_date",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_date.label",
+          "info": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_date.info"
+        },
+        {
+          "type": "text",
+          "id": "countdown_time",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_time.label",
+          "info": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.countdown_time.info",
+          "default": "00:00:00"
+        },
+        {
+          "type": "checkbox", 
+          "id": "show_days", 
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.show_days.label",
+          "default": false
+        },
+        {
+          "type": "header", 
+          "content": "Popup"
+        },
+        {
+          "type": "text",
+          "id": "popup_promo_title_default",
+          "label": "Title Default",
+          "info": "Will show when not in Ship Scout locale"
+        },
+        {
+          "type": "text",
+          "id": "popup_promo_title",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_title.label"
+        },
+        {
+          "type": "textarea",
+          "id": "popup_promo_description_default",
+          "label": "Description Default",
+          "info": "Will show when not in Ship Scout locale"
+        },
+        {
+          "type": "textarea",
+          "id": "popup_promo_description",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_description.label",
+          "info": "Use <$> to as a placeholder for Ship Scout treshold amount"
+        },
+        {
+          "type": "text",
+          "id": "popup_promo_link_text",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_link_text.label"
+        },
+        {
+          "type": "url",
+          "id": "popup_promo_link",
+          "label": "t:sections.announcement-bar-dynamic.blocks.announcement.settings.popup_promo_link.label"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "announcement"
+      }
+    ]
+  }
+}
+{% endschema %}

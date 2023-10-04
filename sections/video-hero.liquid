@@ -1,0 +1,90 @@
+<style>
+  .video-wrapper {
+    position: relative;
+  }
+  .video-wrapper video {
+    width: 100%;
+    display: block;
+    border: 1px solid rgba(var(--color-base-accent-1));
+    cursor: pointer;
+    object-fit: cover;
+  }
+
+  .desktop-video-wrapper video {
+    max-height: 80vh !important;
+  }
+
+  .desktop-video-wrapper {
+    display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .desktop-video-wrapper {
+      display: block;
+    }
+    .mobile-video-wrapper {
+      display: none;
+    }
+  }
+</style>
+
+<div class="page-width">
+  <div class="video-wrapper desktop-video-wrapper">
+    <video playsinline loop autoplay muted poster="{{section.settings.cover_image_desktop}}">
+      <source
+        src="{{ section.settings.video_url }}"
+        type="video/mp4"
+      >
+      {%- comment -%}
+        <source src="{{ section.settings.video_url }}"type="video/mp4">
+      {%- endcomment -%}
+    </video>
+  </div>
+  <div class="video-wrapper mobile-video-wrapper">
+    <video playsinline loop autoplay muted poster="{{section.settings.cover_image_mobile}}">
+      <source
+        src="{{ section.settings.video_url_mobile }}"
+        type="video/mp4"
+      >
+      {%- comment -%}
+        <source src="{{ section.settings.video_url_mobile }}"
+        type="video/mp4">
+      {%- endcomment -%}
+    </video>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Video Hero",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+      "type": "url",
+      "id": "cover_image_desktop",
+      "label": "Video Poster Desktop"
+    },
+    {
+      "type": "url",
+      "id": "cover_image_mobile",
+      "label": "Video Poster Mobile"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Desktop - Shopify Files Video URL"
+    },
+    {
+      "type": "url",
+      "id": "video_url_mobile",
+      "label": "Mobile - Shopify Files Video URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Hero"
+    }
+  ]
+}
+{% endschema %}

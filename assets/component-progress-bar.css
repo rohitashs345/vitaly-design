@@ -1,0 +1,128 @@
+.progress-bar {
+  --progress-bar-dot-diameter: 10px;
+  --progress-bar-icon-diameter: 24px;
+  --progress-bar-icon-radius: calc(var(--progress-bar-icon-diameter) / 2);
+  --progress-bar-dot-radius: calc(var(--progress-bar-dot-diameter) / 2);
+  --progress-bar-step-caption-font-size: 1.6rem;
+  --progress-bar-step-caption-padding-top: 10px;
+
+  display: block;
+  background-color: var(--progress-bar-background-color);
+  color: var(--progress-bar-text-color);
+  padding: 10px;
+}
+
+.progress-bar.loading {
+  display: none;
+}
+
+.progress-bar__outer-bar {
+  width: calc(100% - var(--progress-bar-icon-radius) - var(--progress-bar-dot-radius));
+  height: 2px;
+  background-color: var(--progress-bar-outer-bar-color);
+  position: relative;
+  margin-top: var(--progress-bar-icon-radius);
+  margin-left: var(--progress-bar-dot-radius);
+  margin-bottom: calc(var(--progress-bar-icon-radius) + var(--progress-bar-step-caption-font-size) + var(--progress-bar-step-caption-padding-top));
+}
+
+.progress-bar__inner-bar {
+  position: relative;
+  background-color: var(--progress-bar-inner-bar-color);
+  height: 2px;
+  display: block !important;
+  z-index: 0;
+}
+
+.progress-bar__step {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  display: block !important;
+  box-sizing: border-box;
+}
+
+.progress-bar__step--icon {
+  width: var(--progress-bar-icon-diameter);
+  height: var(--progress-bar-icon-diameter);
+  background-color: var(--progress-bar-outer-bar-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.progress-bar__step--icon.progress-bar__step--active {
+  background-color: var(--progress-bar-inner-bar-color);
+}
+
+.progress-bar__step--dot {
+  width: var(--progress-bar-dot-diameter);
+  height: var(--progress-bar-dot-diameter);
+  border-radius: 50%;
+  background-color: var(--progress-bar-inner-bar-color);
+}
+
+.progress-bar__checkmark, 
+.progress-bar__lock {
+  width: 45%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.progress-bar__checkmark {
+  visibility: hidden;
+  transform: translate(-50%, -50%);
+}
+
+.progress-bar__checkmark path {
+  fill: none;
+  stroke: var(--progress-bar-background-color);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.progress-bar__lock {
+  transform: translate(-50%, -53%);
+  fill: white;
+}
+
+.progress-bar__step--active .progress-bar__checkmark {
+  visibility: visible;
+}
+
+.progress-bar__step--active .progress-bar__lock {
+  visibility: hidden;
+}
+
+.progress-bar__step-caption {
+  position: absolute;
+  top: calc(100% + var(--progress-bar-step-caption-padding-top));
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--progress-bar-step-caption-font-size);
+  line-height: var(--progress-bar-step-caption-font-size);
+}
+
+.progress-bar__step--last .progress-bar__step-caption {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}
+
+.progress-bar__messages {
+  margin-bottom: 25px;
+}
+
+.progress-bar__message span {
+  font-weight: bold;
+}
+
+.progress-bar__message {
+  display: none;
+}
+
+.progress-bar__message.progress-bar__message--current {
+  display: block;
+}

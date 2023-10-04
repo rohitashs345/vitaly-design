@@ -1,0 +1,63 @@
+.sizing-guide .content-info__header {
+  text-align: center;
+}
+
+.sizing-guide ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  padding: 0;
+  margin-bottom: 29px;
+}
+
+.sizing-guide__tab-button {
+  border: 1px solid black;
+  padding: 14px 8px;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 375px) {
+  .sizing-guide__tab-button {
+    padding: 14px 20px;
+  }
+}
+
+.sizing-guide iframe {
+  width: 100%;
+}
+
+.sizing-guide ol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-left: 20px;
+}
+
+.sizing-guide__title {
+  text-transform: uppercase;
+  font-size: 21px;
+  letter-spacing: 1.2px;
+  margin-bottom: 29px;
+}
+
+.sizing-guide__subtitle {
+  font-size: 15px;
+  margin-bottom: 36px;
+  font-weight: bold;
+}
+
+.sizing-guide__tab-button.active {
+  color: white;
+  background: black;
+}
+
+.sizing-guide__tab-content {
+  display: none;
+}
+
+.sizing-guide__tab-content.active {
+  display: block;
+}

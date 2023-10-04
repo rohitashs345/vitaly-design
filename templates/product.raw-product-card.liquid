@@ -1,0 +1,176 @@
+{% layout none %}
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<a href="{{ product.url }}" class="card-wrapper-link">
+  <div class="card-wrapper">
+    <div class="card-information">
+      <div class="card-information__wrapper">
+        <div>
+          <h3 class="card-information__text h5">
+            {{ product.title }}
+          </h3>
+        </div>
+
+        {% render 'price', product: product, price_class: '' %}
+
+        {% comment %} {% assign global_auto_discount = 100 | minus: settings.sitewide_discount_pricing_percentage | times: 0.01 %}
+        {% assign global_discount_clearance = product.price | times: global_auto_discount | times: 0.01 %}
+        {% assign global_discount_clearance_percentage = global_discount_clearance
+          | divided_by: product.compare_at_price
+          | times: 10000
+          | round
+        %}
+        {%- if product.available == false -%}
+          <div class="card__badge card__badge-sold-out">
+            <span class="badge badge--bottom-left sold-out-badge color-{{ settings.sold_out_badge_color_scheme }}">
+              {{- 'products.product.sold_out' | t -}}
+            </span>
+          </div>
+        {%- else -%}
+          {%- if settings.sitewide_discount_enabled == true -%}
+            {%- if product.compare_at_price == null
+              or product.compare_at_price == product.price
+              or product.compare_at_price == 0
+            -%}
+              <div class="card__badge card__badge-on-sale 1">
+                <span class="badge badge--bottom-left on-sale-badge color-{{ settings.sale_badge_color_scheme }}">
+                  {{ settings.sitewide_discount_pricing_percentage }}% Off
+                </span>
+              </div>
+
+            {%- elsif product.compare_at_price > product.price -%}
+              <div class="card__badge card__badge-on-sale 2">
+                <span class="badge badge--bottom-left on-sale-badge color-{{ settings.sale_badge_color_scheme }}">
+                  {{ 100 | minus: global_discount_clearance_percentage }}% Off
+                  <!-- Sale -->
+                </span>
+              </div>
+            {%- else -%}
+            {%- endif -%}
+          {%- elsif product.compare_at_price == null and settings.sitewide_discount_enabled == false -%}
+            {%- if product.compare_at_price > product.price
+              and settings.sitewide_discount_enabled == false
+              and product.available != false
+            -%}
+              <div class="card__badge card__badge-on-sale 3">
+                <span class="badge badge--bottom-left on-sale-badge color-{{ settings.sale_badge_color_scheme }}">
+                  {{
+                    product.compare_at_price_min
+                    | minus: product.price
+                    | times: 100.0
+                    | divided_by: product.compare_at_price_min
+                    | round
+                  -}}
+                  % OFF
+                </span>
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endif -%} {% endcomment %}
+
+        <div class="card__badge">
+          {%- if product.available == false -%}
+              <span class="badge badge--bottom-left card__badge-sold-out">
+                {%- if product.metafields.custom.enable_presale == true
+                  and product.metafields.custom.presale_message != blank
+                -%}
+                  {{- product.metafields.custom.presale_message -}}
+                {% else %}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+          {%- elsif settings.sitewide_discount_enabled and product.gift_card? != true -%}
+            {%- liquid
+              assign total_discount_percentage = settings.sitewide_discount_pricing_percentage
+              assign total_discount_decimal = total_discount_percentage | times: 0.01
+              assign total_discount_complement = 1 | minus: total_discount_decimal
+
+              assign total_discount_amount = product.price | times: total_discount_decimal
+
+              assign new_product_price = product.price | times: total_discount_complement
+
+              # Calculate a total discount amount for products that have already been discounted.
+              if product.compare_at_price > product.price and product.compare_at_price != null or product.compare_at_price != 0
+                assign total_discount_amount = product.compare_at_price | minus: new_product_price
+                assign total_discount_decimal = total_discount_amount | divided_by: product.compare_at_price
+                assign total_discount_percentage = total_discount_decimal | times: 100
+              endif
+            -%}
+
+            {%- if settings.show_sitewide_discount_as_percentage -%}
+              <span class="badge badge--bottom-left on-sale-badge on-sale-badge--discount-as-percentage color-{{ settings.sale_badge_color_scheme }}">
+                {{ total_discount_percentage | floor }}% Off
+              </span>
+            {%- endif -%}
+
+            {%- if settings.show_sitewide_discount_as_amount -%}
+              <span class="badge badge--bottom-left on-sale-badge on-sale-badge--discount-as-amount color-{{ settings.sale_badge_color_scheme }}">
+                Save
+                {% if cart.currency.iso_code == 'USD'
+                  or cart.currency.iso_code == 'CAD'
+                  or cart.currency.iso_code == 'EUR'
+                  or cart.currency.iso_code == 'AUD'
+                %}
+                  {{ cart.currency.symbol -}}
+                  {{- total_discount_amount | money_without_currency | floor }}
+                {% else %}
+                  {{ total_discount_amount | money_without_trailing_zeros }}
+                {% endif %}
+              </span>
+            {%- endif -%}
+
+          {%- elsif product.tags contains 'Final Sale' and settings.final_sale_badge_on_product_card_enabled -%}
+            <span class="badge badge--bottom-left card__badge-sale">
+              {{- 'products.product.on_final_sale' | t -}}
+            </span>
+          {%- elsif product.compare_at_price > product.price  or product.tags contains 'Sale' -%}
+            <span class="badge badge--bottom-left card__badge-sale">
+              {{
+                product.compare_at_price_min
+                | minus: product.price
+                | times: 100.0
+                | divided_by: product.compare_at_price_min
+                | round
+              -}}
+              % OFF
+            </span>
+          {%- elsif product.metafields.junip.rating_count < 3 -%}
+            {% comment %} New Badge {% endcomment %}
+            <span
+              class="badge badge--bottom-left card__badge-new"
+            >
+              {{- 'products.product.new' | t -}}
+            </span>
+          {%- elsif product.tags contains 'Bestseller' -%}
+            {% comment %} New Badge {% endcomment %}
+            <span
+              class="badge badge--bottom-left card__badge-bestseller"
+            >
+              {{- 'products.product.bestseller' | t -}}
+            </span>
+          {%- elsif is_low_stock -%}
+            {% comment %} Low Stock Badge {% endcomment %}
+            <span
+              class="badge badge--bottom-left card__badge-low-stock"
+            >
+              {{- 'products.product.low_stock' | t -}}
+            </span>
+          {%- elsif product.tags contains 'Collaboration' -%}
+            {% comment %} Collaboration {% endcomment %}
+            <span
+              class="badge badge--bottom-left card__badge-collaboration"
+            >
+              {{- 'products.product.collaboration' | t -}}
+            </span>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--product card--outline" tabindex="-1">
+      <div class="media media--transparent media--square media--hover-effect">
+        <img src="{{ product.featured_media | image_url: height: 900 }}">
+      </div>
+    </div>
+  </div>
+</a>

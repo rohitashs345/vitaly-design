@@ -1,0 +1,114 @@
+<!-- Custom Code to Add Wishlist behind Login. -->
+<script defer>
+  {% comment %} function removeSwymAddedClass () {
+    let swymButtons = document.querySelectorAll("[data-swym-add-to-wishlist-view-product]");
+    if (swymButtons.length > 0) {
+      for (i = 0; i < swymButtons.length; i++ ) {
+        if (swymButtons[i].classList.contains('swym-added') || swymButtons[i].classList.contains('swym-added') || swymButtons[i].classList.contains('swym-added')){
+           swymButtons[i].classList.remove("swym-added");
+           swymButtons[i].classList.remove("disabled");
+           swymButtons[i].classList.remove("swym-adding");
+        }
+       }
+    }
+  }
+
+  function checkIfVariantPresent () {
+    let swymPdp = document.getElementById("swym-custom-pdp");
+    if (swymPdp) {
+      if (typeof(swymPdp.getAttribute("data-variant-id")) != 'number') {
+        swymPdp.setAttribute("data-variant-id", window.SwymPageData.epi);
+        _swat.initializeActionButtons("Body");
+        console.log("lord pls");
+      }
+    }
+  }
+
+  document.addEventListener("swym:login-modal-closed", function(){
+      _swat.initializeActionButtons("body");
+      removeSwymAddedClass();
+  });
+
+  var isLoggedIn;
+  {% comment %} isLoggedIn = true; {% endcomment %}
+  {% if customer %}
+    isLoggedIn = true;
+  {% else %}
+    isLoggedIn = false;
+  {% endif %}
+
+  var returnUrl = localStorage.getItem("returnToUrl");
+
+  if(isLoggedIn && returnUrl != null){
+    window.location = returnUrl; //redirect to same page after login success
+    localStorage.removeItem("returnToUrl");
+  } {% endcomment %}
+
+  {% comment %} function swymCallbackFn(swat) {
+    document.addEventListener("swym:collections-loaded", function(){
+      swat.initializeActionButtons("Body");
+    });
+
+    
+    if (isLoggedIn == false) {
+      
+      SwymUtils.getHostedURL = function() {
+        /* Navigate to login page on click of swym-icons for wishlist page. */
+        return "/account/login";
+      }
+      
+      // Override launchpoints.
+      swat.ui.open = function(){
+        console.log("Not Logged IN!");
+        swymRedirectToLogin();
+      }
+      
+      // Override default API implementations.
+      swat.api.addToWishList = function({product}){
+        console.log("Not Logged IN!");
+        localStorage.setItem("ItemToWishlist",product.epi);
+        localStorage.setItem("returnToUrl", window.location.href);
+        swymRedirectToLogin();
+      }
+
+      // Override API for Pop-up
+      swat.ui.uiRef.addToWishlist = function({product}){
+        console.log("Not Logged IN!");
+        localStorage.setItem("ItemToWishlist",product.epi);
+        localStorage.setItem("returnToUrl", window.location.href);
+        swymRedirectToLogin(product);
+      }
+    }
+
+    //Add to wishlist after login success
+    var itemToWishlist = localStorage.getItem("ItemToWishlist");
+    if(returnUrl==null && isLoggedIn && itemToWishlist!=null){
+      setTimeout(()=>{
+        {% comment %} debugger; {% endcomment %}
+        let wishlistButton = document.querySelector(`[data-swym-button][data-variant-id="${itemToWishlist}"]`);
+        let wishlistPDPButton = document.querySelector('.swym-add-to-wishlist');
+            wishlistButton && wishlistButton.click();
+            wishlistPDPButton && wishlistPDPButton.click();
+            localStorage.removeItem("ItemToWishlist");
+        },500);
+    }
+
+    function swymRedirectToLogin(product){
+      showLogin && showLogin()
+    }
+    if (isLoggedIn == false) {
+      setTimeout(removeSwymAddedClass, 2000);
+    }
+    // checkIfVariantPresent();
+  } {% endcomment %}
+
+  function swymCallbackFn(swat) {
+    swat.initializeActionButtons
+  }
+  
+  if (!window.SwymCallbacks) {
+    window.SwymCallbacks = [];
+  }
+  window.SwymCallbacks.push(swymCallbackFn);
+
+</script>

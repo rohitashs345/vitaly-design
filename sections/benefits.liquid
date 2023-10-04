@@ -1,0 +1,757 @@
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'component-slider.css' | asset_url }}" media="print" onload="this.media='all'">
+{{ 'section-benefits.css' | asset_url | stylesheet_tag }}
+<noscript>{{ 'component-slider.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}.section-outer{
+    background-color:{{ section.settings.bgcolor }};
+    {%- if section.settings.bgimage != blank -%}
+    background-image: url({{ section.settings.bgimage | image_url }});
+    background-size: cover;
+    background-position: center;
+    {%- endif -%}
+  }
+
+  .benefits-section {
+    margin-bottom: 0px !important;
+    border: {{ section.settings.content_bg_border }}px solid {{ section.settings.content_bg_border_hex}};
+  }
+
+  .benefits-section .benefits-card .multicolumn-card__image-wrapper--custom-width {
+    max-width: {{ section.settings.image_width_px -}}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .section-outer.section-{{ section.id }} h2.title {
+      color: {{ section.settings.heading_text_large }};
+      font-size: {{ section.settings.heading_text_size_large }}px;
+    }
+
+    .section-outer.section-{{ section.id }} .subheading {
+      color: {{ section.settings.heading_text_large }};
+      font-size: {{ section.settings.subtext_text_size_large }}px;
+    }
+
+    .section-{{ section.id }} .benefits-card__info h3 {
+      color: {{ section.settings.column_text_large }};
+      font-size: {{ section.settings.column_heading_text_size_large }}px;
+      margin-bottom: 10px;
+    }
+
+    .section-{{ section.id }} .benefits-card__info .rte {
+      color: {{ section.settings.column_text_large }};
+      font-size: {{ section.settings.column_subtext_text_size_large }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-{{ section.id }}.section-outer h2.title {
+      color: {{ section.settings.heading_text_large }};
+      font-size: {{ section.settings.heading-text-size-small }}px;
+    }
+
+    .section-{{ section.id }}.section-outer .subheading {
+      color: {{ section.settings.heading_text_large }};
+      font-size: {{ section.settings.subtext_text_size_small }}px;
+    }
+
+    .section-{{ section.id }} .benefits-card__info h3 {
+      color: {{ section.settings.column_text_large }};
+      font-size: {{ section.settings.column_heading-text-size-small }}px;
+      margin-bottom: 10px;
+    }
+
+    .section-{{ section.id }} .benefits-card__info .rte {
+      color: {{ section.settings.column_text_large }};
+      font-size: {{ section.settings.column_subtext_text_size_small }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-outer {% if section.settings.title == blank %} no-heading{% endif %} section-{{ section.id }}">
+  <div class="page-width section-{{ section.id }}-padding">
+    <div class="title-wrapper-with-link title-wrapper--self-padded-mobile{% if section.settings.title == blank %} title-wrapper-with-link--no-heading{% endif %} {% if section.settings.heading_alignment == 'center' %} center{% endif %}">
+      {%- if section.settings.title != blank -%}
+        <h2 class="title {% if section.settings.hide_heading %} hidemobpart{% endif %}">
+          {{ section.settings.title | escape }}
+        </h2>
+      {%- endif -%}
+      {%- if section.settings.subtext != blank -%}
+        <div class="subheading rte {% if section.settings.hide_subtext %} hidemobpart{% endif %}">
+          {{ section.settings.subtext }}
+        </div>
+      {%- endif -%}
+    </div>
+    <slider-component class="slider-mobile-gutter">
+      <ul
+        class="benefits-list grid grid--1-col{% if section.blocks.size > 3 %} grid--2-col-tablet grid--4-col-desktop{% else %} grid--3-col-tablet{% endif %}{% if section.settings.swipe_on_mobile and section.blocks.size > 1 %} slider slider--mobile grid--peek{% endif %}"
+        id="Slider-{{ section.id }}"
+        role="list"
+      >
+        {%- liquid
+          assign highest_ratio = 0
+          for block in section.blocks
+            if block.settings.image.aspect_ratio > highest_ratio
+              assign highest_ratio = block.settings.image.aspect_ratio
+            endif
+          endfor
+        -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'column' -%}
+              <li
+                id="Slide-{{ section.id }}-{{ forloop.index }}"
+                class="benefits-list__item grid__item{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{% if section.settings.column_alignment == 'center' %} center{% endif %} {% if block.settings.hide_column %} hidemobpart{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                <div class="benefits-card">
+                  {%- if block.settings.image != blank -%}
+                    {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'circle' %}
+                      {% assign spaced_image = true %}
+                    {% endif %}
+                    <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--{{ section.settings.image_width }}-width{% if section.settings.image_width != 'full' or spaced_image %} multicolumn-card-spacing{% endif %}">
+                      <div
+                        class="{% if block.settings.hide_image %} hidemobpart{% endif %} media media--transparent media--{{ section.settings.image_ratio }}"
+                        {% if section.settings.image_ratio == 'adapt' %}
+                          style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;"
+                        {% endif %}
+                      >
+                        <img
+                          srcset="
+                            {%- if block.settings.image.width >= 275 -%}{{ block.settings.image | image_url: width: 275 }} 275w,{%- endif -%}
+                            {%- if block.settings.image.width >= 550 -%}{{ block.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+                            {%- if block.settings.image.width >= 710 -%}{{ block.settings.image | image_url: width: 710 }} 710w,{%- endif -%}
+                            {%- if block.settings.image.width >= 1420 -%}{{ block.settings.image | image_url: width: 1420 }} 1420w,{%- endif -%}
+                            {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                          "
+                          src="{{ block.settings.image | image_url: width: 550 }}"
+                          sizes="
+                            (min-width: 990px) {% if section.blocks.size <= 2 %}710px{% else %}550px{% endif %},
+                            (min-width: 750px) {% if section.blocks.size == 1 %}710px{% else %}550px{% endif %},
+                            calc(100vw - 30px)
+                          "
+                          alt="{{ block.settings.image.alt }}"
+                          height="{{ block.settings.image.height }}"
+                          width="{{ block.settings.image.width }}"
+                          loading="lazy"
+                        >
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  <div class="benefits-card__info">
+                    {%- if block.settings.title != blank -%}
+                      <h3
+                        {% if block.settings.hide_title %}
+                          class="hidemobpart"
+                        {% endif %}
+                      >
+                        {{ block.settings.title | escape }}
+                      </h3>
+                    {%- endif -%}
+                    {%- if block.settings.text != blank -%}
+                      <div class="rte {% if block.settings.hide_text %} hidemobpart{% endif %}">
+                        {{ block.settings.text }}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.link_label != blank -%}
+                      <a
+                        class="link animate-arrow"
+                        {% if block.settings.link == blank %}
+                          role="link" aria-disabled="true"
+                        {% else %}
+                          href="{{ block.settings.link }}"
+                        {% endif %}
+                      >
+                        {{- block.settings.link_label | escape -}}
+                        <span class="icon-wrap">&nbsp;{% render 'icon-arrow' %}</span></a
+                      >
+                    {%- endif -%}
+                  </div>
+                </div>
+              </li>
+            {%- when 'ship_scout_benefit' -%}
+              {%- liquid 
+                assign is_ship_scout_test_running = false
+                if localization.country.iso_code == 'US'
+                  assign is_ship_scout_test_running = true
+                endif 
+
+                assign full_ship_scout_benefit_title = block.settings.title
+                assign full_ship_scout_benefit_text = block.settings.text
+
+                if block.settings.ship_scout_benefit_title != blank and is_ship_scout_test_running
+                  assign ship_scout_benefit_title = block.settings.ship_scout_benefit_title | split: '<$>'
+                  assign full_ship_scout_benefit_title = ship_scout_benefit_title[0] | append: '<span data-ship-scout-amount></span>' | append: ship_scout_benefit_title[1]
+                endif
+                if block.settings.ship_scout_benefit_text != blank and is_ship_scout_test_running
+                  assign ship_scout_benefit_text = block.settings.ship_scout_benefit_text | split: '<$>'
+                  assign full_ship_scout_benefit_text = ship_scout_benefit_text[0] | append: '<span data-ship-scout-amount></span>' | append: ship_scout_benefit_text[1]
+                endif
+                -%}
+              <li
+                id="Slide-{{ section.id }}-{{ forloop.index }}"
+                class="benefits-list__item grid__item{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{% if section.settings.column_alignment == 'center' %} center{% endif %} {% if block.settings.hide_column %} hidemobpart{% endif %}"
+                {{ block.shopify_attributes }}
+                {% if is_ship_scout_test_running -%}
+                  data-ship-scout-benefit
+                {%- endif -%}
+              >
+                <div class="benefits-card">
+                  {%- if block.settings.image != blank -%}
+                    {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'circle' %}
+                      {% assign spaced_image = true %}
+                    {% endif %}
+                    <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--{{ section.settings.image_width }}-width{% if section.settings.image_width != 'full' or spaced_image %} multicolumn-card-spacing{% endif %}">
+                      <div
+                        class="{% if block.settings.hide_image %} hidemobpart{% endif %} media media--transparent media--{{ section.settings.image_ratio }}"
+                        {% if section.settings.image_ratio == 'adapt' %}
+                          style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;"
+                        {% endif %}
+                      >
+                        <img
+                          srcset="
+                            {%- if block.settings.image.width >= 275 -%}{{ block.settings.image | image_url: width: 275 }} 275w,{%- endif -%}
+                            {%- if block.settings.image.width >= 550 -%}{{ block.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+                            {%- if block.settings.image.width >= 710 -%}{{ block.settings.image | image_url: width: 710 }} 710w,{%- endif -%}
+                            {%- if block.settings.image.width >= 1420 -%}{{ block.settings.image | image_url: width: 1420 }} 1420w,{%- endif -%}
+                            {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                          "
+                          src="{{ block.settings.image | image_url: width: 550 }}"
+                          sizes="
+                            (min-width: 990px) {% if section.blocks.size <= 2 %}710px{% else %}550px{% endif %},
+                            (min-width: 750px) {% if section.blocks.size == 1 %}710px{% else %}550px{% endif %},
+                            calc(100vw - 30px)
+                          "
+                          alt="{{ block.settings.image.alt }}"
+                          height="{{ block.settings.image.height }}"
+                          width="{{ block.settings.image.width }}"
+                          loading="lazy"
+                        >
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  <div class="benefits-card__info">
+                    {%- if full_ship_scout_benefit_title -%}
+                      <h3
+                        {% if block.settings.hide_title %}
+                          class="hidemobpart"
+                        {% endif %}
+                      >
+                        {{ full_ship_scout_benefit_title }}
+                      </h3>
+                    {%- endif -%}
+                    {%- if full_ship_scout_benefit_text -%}
+                      <div class="rte {% if block.settings.hide_text %} hidemobpart{% endif %}">
+                        {{ full_ship_scout_benefit_text }}
+                      </div>
+                    {%- endif -%}
+                    {%- if block.settings.link_label != blank -%}
+                      <a
+                        class="link animate-arrow"
+                        {% if block.settings.link == blank %}
+                          role="link" aria-disabled="true"
+                        {% else %}
+                          href="{{ block.settings.link }}"
+                        {% endif %}
+                      >
+                        {{- block.settings.link_label | escape -}}
+                        <span class="icon-wrap">&nbsp;{% render 'icon-arrow' %}</span></a
+                      >
+                    {%- endif -%}
+                  </div>
+                </div>
+              </li>
+          {%- endcase -%}
+
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.swipe_on_mobile -%}
+        <div class="slider-buttons no-js-hidden medium-hide{% if section.blocks.size < 2 %} small-hide{% endif %}">
+          <button
+            type="button"
+            class="slider-button slider-button--prev"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+          <div class="slider-counter caption">
+            <span class="slider-counter--current">1</span>
+            <span aria-hidden="true"> / </span>
+            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+            <span class="slider-counter--total">{{ section.blocks.size }}</span>
+          </div>
+          <button
+            type="button"
+            class="slider-button slider-button--next"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+        </div>
+      {%- endif -%}
+    </slider-component>
+    <div class="center{% if section.settings.swipe_on_mobile %} small-hide medium-hide{% endif %}">
+      {%- if section.settings.button_label != blank -%}
+        <a
+          class="button button--primary"
+          {% if section.settings.button_link == blank %}
+            role="link" aria-disabled="true"
+          {% else %}
+            href="{{ section.settings.button_link }}"
+          {% endif %}
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Benefits Section",
+  "class": "spaced-section spaced-section--full-width benefits-section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Multicolumn",
+      "label": "t:sections.multicolumn.settings.title.label"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+      "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.multicolumn.settings.column_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.multicolumn.settings.column_alignment.options__2.label"
+        }
+      ],
+      "default": "left",
+      "label": "Heading alignment"
+    },
+    {
+      "type": "color",
+      "id": "heading_text_large",
+      "label": "Text Colour",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Large Devices"
+    },
+    {
+      "type": "range",
+      "id": "heading_text_size_large",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading Text size",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "subtext_text_size_large",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Sub Text size",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Small Devices"
+    },
+    {
+      "type": "range",
+      "id": "heading-text-size-small",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading Text size",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "subtext_text_size_small",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Sub Text size",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "image_width",
+      "options": [
+        {
+          "value": "custom",
+          "label": "Custom"
+        },
+        {
+          "value": "third",
+          "label": "t:sections.multicolumn.settings.image_width.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.multicolumn.settings.image_width.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.multicolumn.settings.image_width.options__3.label"
+        }
+      ],
+      "default": "full",
+      "label": "t:sections.multicolumn.settings.image_width.label"
+    },
+    {
+      "type": "range",
+      "id": "image_width_px",
+      "min": 30,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Custom Image Width",
+      "default": 60,
+      "info": "Available only if Image Width is set to Custom."
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "circle",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__4.label"
+        }
+      ],
+      "default": "adapt",
+      "label": "t:sections.multicolumn.settings.image_ratio.label"
+    },
+    {
+      "type": "select",
+      "id": "column_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.multicolumn.settings.column_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.multicolumn.settings.column_alignment.options__2.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.multicolumn.settings.column_alignment.label"
+    },
+    {
+      "type": "color",
+      "id": "column_text_large",
+      "label": "Column Text Colour",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Large Devices"
+    },
+    {
+      "type": "range",
+      "id": "column_heading_text_size_large",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Column Heading Text size",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "column_subtext_text_size_large",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Column Text size",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Small Devices"
+    },
+    {
+      "type": "range",
+      "id": "column_heading-text-size-small",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Column Heading Text size",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "column_subtext_text_size_small",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Column Text size",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_heading",
+      "default": false,
+      "label": "Hide heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_subtext",
+      "default": false,
+      "label": "Hide Subtext"
+    },
+    {
+      "type": "header",
+      "content": "Background settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "bgimage",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "bgcolor",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "content_bg_border",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Border Width",
+      "default": 0,
+      "info": "Set to 0 to disable border."
+    },
+    {
+      "type": "color",
+      "id": "content_bg_border_hex",
+      "label": "Border Colour",
+      "default": "#ababab"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "t:sections.multicolumn.settings.swipe_on_mobile.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "t:sections.multicolumn.blocks.column.name",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.multicolumn.blocks.column.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Column",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+          "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+        },
+        {
+          "type": "header",
+          "content": "Mobile Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_column",
+          "default": false,
+          "label": "Hide Column"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_image",
+          "default": false,
+          "label": "Hide Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_title",
+          "default": false,
+          "label": "Hide Title"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_text",
+          "default": false,
+          "label": "Hide Content"
+        }
+      ]
+    },
+    {
+      "type": "ship_scout_benefit",
+      "name": "Ship Scout Benefit",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.multicolumn.blocks.column.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Column",
+          "label": "Default Title",
+          "info": "Default title when not in Ship Scout test locale."
+        },
+        {
+          "type": "text",
+          "id": "ship_scout_benefit_title",
+          "label": "Ship Scout Title",
+          "info": "<$> will be replaced by Ship Scout Threshold Amount"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "default": "Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.",
+          "label": "Default Text",
+          "info": "Default text when not in Ship Scout test locale."
+        },
+        {
+          "type": "textarea",
+          "id": "ship_scout_benefit_text",
+          "label": "Ship Scout Text",
+          "info": "<$> will be replaced by Ship Scout Threshold Amount"
+        },
+        {
+          "type": "header",
+          "content": "Mobile Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_column",
+          "default": false,
+          "label": "Hide Column"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_image",
+          "default": false,
+          "label": "Hide Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_title",
+          "default": false,
+          "label": "Hide Title"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_text",
+          "default": false,
+          "label": "Hide Content"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits Section",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

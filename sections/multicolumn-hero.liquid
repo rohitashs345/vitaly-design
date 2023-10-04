@@ -1,0 +1,621 @@
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'component-slider.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-slider.css' | asset_url | stylesheet_tag }}</noscript>
+
+<style>
+  .multicolumn-list__item:first-of-type {
+    padding-right: 0px;
+  }
+
+  .multicolumn-list__item:nth-of-type(2) {
+    padding-left: 0px;
+    margin-bottom: 0;
+  }
+
+  .multicolumn-card {
+    border: 1px solid black;
+    position: relative;
+  }
+  .multicolumn-card__info {
+    padding: 0 !important;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .multicolumn-card__info .link,
+  .multicolumn-card__cta .link {
+    font-size: 1.6rem;
+    margin: 1rem 1rem;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 0.2rem;
+    text-decoration-thickness: 0.1rem;
+  }
+
+  .model-block .multicolumn-card__info .link,
+  .model-block .multicolumn-card__cta .link {
+    font-size: 16px !important;
+  }
+
+  .multicolumn-card__cta {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    right: 0;
+  }
+
+  .multi-component-product-wrapper-with-model {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 50rem;
+  }
+
+  .multicolumn-card model-viewer {
+    height: 100%;
+    width: 100%;
+  }
+
+  .multi-component-description p {
+    padding: 12px 16px;
+  }
+
+  .multi-component-description a {
+    color: rgba(var(--color-base-accent-1));
+  }
+
+  .multicolumn-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .grid--3-col-tablet .grid__item {
+    width: calc(50% - 10px);
+  }
+
+  /*     .desktop-banner {
+      display: none!important;;
+    } */
+
+  .multicolumn-card__info-light span {
+    color: rgba(var(--color-base-background-1)) !important;
+  }
+
+  @media screen and (min-width: 990px) {
+    .multi-component-product-wrapper-with-model {
+      min-height: auto;
+    }
+    .grid--3-col-tablet .grid__item {
+      width: calc(33.33% - 10px);
+    }
+    .multicolumn-list__item:first-of-type {
+      padding-right: 0px;
+    }
+    .multicolumn-list__item:nth-of-type(2) {
+      padding-left: 10px;
+    }
+    .multicolumn-card__info .link,
+    .multicolumn-card__cta .link {
+    }
+    /*         .desktop-banner {
+          display: block!important;;
+        } */
+    /*         .mobile-banner {
+          display: none!important;
+        } */
+  }
+
+  @media screen and (max-width: 640px) {
+    .stacked .multicolumn-list__item {
+      width: 100%;
+    }
+    .stacked .multicolumn-list__item:first-of-type {
+      padding: 0;
+    }
+    .stacked .multicolumn-list__item:nth-of-type(2) {
+      padding: 0;
+    }
+    .multicolumn-card .media .overlay {
+      background: linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0) 60%,
+        rgba(0, 0, 0, 0.75) 100%
+      );
+      height: calc(100% + 1px);
+    }
+
+    .multicolumn-card .media .overlay.overlay-light {
+      background: linear-gradient(
+        0deg,
+        rgb(255, 255, 255) 0%,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 60%,
+        rgb(255, 255, 255) 100%
+      );
+    }
+  }
+  @media screen and (max-width: 990px) {
+    .multicolumn-list__item:first-of-type {
+      width: 100% !important;
+    }
+  }
+</style>
+
+<div class="multicolumn background-{{ section.settings.background_style }}{% if section.settings.title == blank %} no-heading{% endif %}">
+  <div class="page-width">
+    <slider-component class="slider-mobile-gutter">
+      <ul
+        class="multicolumn-list grid grid--1-col{% if section.blocks.size > 3 and section.settings.image_width != 'full' %} grid--2-col-tablet grid--4-col-desktop{% elsif section.blocks.size > 3 and section.settings.image_width == 'full' %} grid--2-col-tablet{% else %} grid--3-col-tablet{% endif %}{% if section.settings.swipe_on_mobile and section.blocks.size > 1 %} slider slider--mobile grid--peek{% endif %} {%- if section.settings.stacked_components -%} stacked {%- endif -%}"
+        id="Slider-{{ section.id }}"
+        role="list"
+      >
+        {%- liquid
+          assign highest_ratio = 0
+          for block in section.blocks
+            if block.settings.image.aspect_ratio > highest_ratio
+              assign highest_ratio = block.settings.image.aspect_ratio
+            endif
+          endfor
+        -%}
+
+        {%- for block in section.blocks -%}
+          <li
+            id="Slide-{{ section.id }}-{{ forloop.index }}"
+            class="multicolumn-list__item grid__item {% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{% if section.settings.column_alignment == 'center' %} center{% endif %}{%- if block.settings.product != blank -%}  model-block{%endif%}"
+            {{ block.shopify_attributes }}
+          >
+            <a href="{{ block.settings.link }}">
+              <div class="multicolumn-card">
+                <div class="multicolumn-card__info{% if block.settings.link_label_color %} multicolumn-card__info-light{% endif %}">
+                  {%- if block.settings.link_label != blank -%}
+                    {%- if block.settings.product == blank -%}
+                      <span class="link animate-arrow">{{ block.settings.link_label | escape }}</span>
+                    {% else %}
+                      <a href="{{ block.settings.link }}" class="link animate-arrow">
+                        {{- block.settings.link_label | escape -}}
+                      </a>
+                    {% endif %}
+                  {%- endif -%}
+                </div>
+                {%- if block.settings.image != blank and block.settings.product == blank -%}
+                  {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'circle' %}
+                    {% assign spaced_image = true %}
+                  {% endif %}
+                  <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--{{ section.settings.image_width }}-width{% if section.settings.image_width != 'full' or spaced_image %} multicolumn-card-spacing{% endif %}">
+                    <div
+                      class="media media--transparent media--{{ section.settings.image_ratio }}"
+                      {% if section.settings.image_ratio == 'adapt' %}
+                        style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;"
+                      {% endif %}
+                    >
+                      <img
+                        class="desktop-banner"
+                        srcset="
+                          {%- if block.settings.image.width >= 275 -%}{{ block.settings.image | image_url: width: 275 }} 275w,{%- endif -%}
+                          {%- if block.settings.image.width >= 550 -%}{{ block.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+                          {%- if block.settings.image.width >= 710 -%}{{ block.settings.image | image_url: width: 710 }} 710w,{%- endif -%}
+                          {%- if block.settings.image.width >= 1420 -%}{{ block.settings.image | image_url: width: 1420 }} 1420w,{%- endif -%}
+                          {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                        "
+                        src="{{ block.settings.image | image_url: '550x' }}"
+                        sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width }}px, (min-width: 750px) calc(100vw), calc(100vw)"
+                        alt="{{ block.settings.image.alt }}"
+                        height="{{ block.settings.image.height }}"
+                        width="{{ block.settings.image.width }}"
+                      >
+
+                      <div
+                        class="overlay {% if block.settings.light_overlay %} overlay-light {% endif %}"
+                        {% if block.settings.show_overlay %}
+                          style="display:block;"
+                        {% else %}
+                          style="display:none;"
+                        {% endif %}
+                      ></div>
+                    </div>
+                  </div>
+                {%- endif -%}
+
+                {%- if block.settings.product != blank -%}
+                  {%- liquid
+                    assign model_available = false
+                    for media in block.settings.product.media
+                      if media.media_type == 'model'
+                        assign model_available = true
+                      endif
+                    endfor
+                  -%}
+
+                  {%- assign roll = block.settings.roll -%}
+                  {%- assign yaw = block.settings.yaw -%}
+                  {%- assign pitch = block.settings.pitch -%}
+
+                  {% if model_available == true %}
+                    <div class="multi-component-product-wrapper multi-component-product-wrapper-with-model">
+                      {% for media in block.settings.product.media %}
+                        {% if media.media_type == 'model' %}
+                          {{
+                            media
+                            | model_viewer_tag:
+                              auto-rotate-delay: '1',
+                              image_size: '1024x',
+                              environment-image: 'neutral',
+                              auto-rotate: true,
+                              rotation-per-second: '1rad',
+                              disable-zoom: 'true'
+                          }}
+                          <div class="controls" style="display:none; visibility: hidden;">
+                            <div>Roll: <input id="roll" value="0" size="3" class="number"> degrees</div>
+                            <div>Pitch: <input id="pitch" value="0" size="3" class="number"> degrees</div>
+                            <div>Yaw: <input id="yaw" value="0" size="3" class="number"> degrees</div>
+                          </div>
+                        {%- endif -%}
+                      {% endfor %}
+                      {%- if block.settings.text != blank -%}
+                        <div class="multi-component-description">
+                          {{ block.settings.text }}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+
+                  {% if model_available == false %}
+                    <div class="multi-component-product-wrapper">
+                      {%- assign imgtest = block.settings.product.featured_media | image_url -%}
+                      <div class="new-product-image"></div>
+                      {% style %}
+                        .new-product-image {
+                          background-image: url({{imgtest}});
+                          background-size: contain;
+                          height: 75%;
+                          width: 100%;
+                          background-repeat: no-repeat;
+                          background-position: center;
+
+                        }
+                      {% endstyle %}
+
+                      {% if section.settings.image_ratio == 'adapt' or section.settings.image_ratio == 'circle' %}
+                        {% assign spaced_image = true %}
+                      {% endif %}
+                      <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--{{ section.settings.image_width }}-width{% if section.settings.image_width != 'full' or spaced_image %} multicolumn-card-spacing{% endif %}">
+                        <div
+                          class="media media--transparent media--{{ section.settings.image_ratio }}"
+                          {% if section.settings.image_ratio == 'adapt' %}
+                            style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;"
+                          {% endif %}
+                        >
+                          <img
+                            srcset="
+                              {%- if block.settings.image.width >= 275 -%}{{ block.settings.image | image_url: width: 275 }} 275w,{%- endif -%}
+                              {%- if block.settings.image.width >= 550 -%}{{ block.settings.image | image_url: width: 550 }} 550w,{%- endif -%}
+                              {%- if block.settings.image.width >= 710 -%}{{ block.settings.image | image_url: width: 710 }} 710w,{%- endif -%}
+                              {%- if block.settings.image.width >= 1420 -%}{{ block.settings.image | image_url: width: 1420 }} 1420w,{%- endif -%}
+                              {{ block.settings.image | image_url }} {{ block.settings.image.width }}w
+                            "
+                            src="{{ block.settings.image | image_url: '550x' }}"
+                            sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 }}px, (min-width: 750px) calc(100vw - 130px), calc(100vw - 50px)"
+                            alt="{{ block.settings.image.alt }}"
+                            height="{{ block.settings.image.height }}"
+                            width="{{ block.settings.image.width }}"
+                          >
+                        </div>
+                      </div>
+
+                      {%- if block.settings.text != blank -%}
+                        <div class="multi-component-description">
+                          {{ block.settings.text }}
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.swipe_on_mobile -%}
+        <div class="slider-buttons no-js-hidden {% if section.blocks.size < 2 %} small-hide{% endif %}">
+          <button
+            type="button"
+            class="slider-button slider-button--prev"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+          <div class="slider-counter caption">
+            <span class="slider-counter--current">1</span>
+            <span aria-hidden="true"> / </span>
+            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+            <span class="slider-counter--total">{{ section.blocks.size }}</span>
+          </div>
+          <button
+            type="button"
+            class="slider-button slider-button--next"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+        </div>
+      {%- endif -%}
+    </slider-component>
+    <div class="center{% if section.settings.swipe_on_mobile %} small-hide medium-hide{% endif %}">
+      {%- if section.settings.button_label != blank -%}
+        <a
+          class="button button--primary"
+          {% if section.settings.button_link == blank %}
+            role="link" aria-disabled="true"
+          {% else %}
+            href="{{ section.settings.button_link }}"
+          {% endif %}
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  const modelViewerExists = document.querySelectorAll('model-viewer').length > 0;
+  if (modelViewerExists) {
+    const modelViewerTransform = document.querySelector('model-viewer');
+    const roll = document.querySelector('#roll');
+    const pitch = document.querySelector('#pitch');
+    const yaw = document.querySelector('#yaw');
+
+    var rolly = `{{ roll }}`;
+    var yawy = `{{ yaw }}`;
+    var pitchy = `{{ pitch }}`;
+
+    modelViewerTransform.orientation = `${rolly}deg ${pitchy}deg ${yawy}deg`;
+
+    const updateOrientation = () => {
+      modelViewerTransform.orientation = `${roll.value}deg ${pitch.value}deg ${yaw.value}deg`;
+    };
+
+    roll.addEventListener('input', () => {
+      updateOrientation();
+    });
+    pitch.addEventListener('input', () => {
+      updateOrientation();
+    });
+    yaw.addEventListener('input', () => {
+      updateOrientation();
+    });
+
+    // model viewer change material (colour and metallness)
+    // const modelViewer = document.querySelector('model-viewer');
+    modelViewerTransform.addEventListener('load', function () {
+      const model = document.querySelector('model-viewer');
+
+      const colorString = '1, 1, 1, 1';
+
+      const color = colorString.split(',').map((numberString) => parseFloat(numberString));
+
+      const metalnessDisplay = 1;
+
+      const roughnessDisplay = 0;
+
+      model.model.materials.forEach(changeMaterial);
+
+      function changeMaterial(material) {
+        material.pbrMetallicRoughness.setBaseColorFactor(color);
+        material.pbrMetallicRoughness.setMetallicFactor(metalnessDisplay);
+        material.pbrMetallicRoughness.setRoughnessFactor(roughnessDisplay);
+      }
+    });
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Multicolumn Hero",
+  "class": "spaced-section spaced-section--full-width",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_width",
+      "options": [
+        {
+          "value": "third",
+          "label": "t:sections.multicolumn.settings.image_width.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.multicolumn.settings.image_width.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.multicolumn.settings.image_width.options__3.label"
+        }
+      ],
+      "default": "full",
+      "label": "t:sections.multicolumn.settings.image_width.label"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "circle",
+          "label": "t:sections.multicolumn.settings.image_ratio.options__4.label"
+        }
+      ],
+      "default": "portrait",
+      "label": "t:sections.multicolumn.settings.image_ratio.label"
+    },
+    {
+      "type": "select",
+      "id": "column_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.multicolumn.settings.column_alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.multicolumn.settings.column_alignment.options__2.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.multicolumn.settings.column_alignment.label"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.multicolumn.settings.background_style.options__1.label"
+        },
+        {
+          "value": "primary",
+          "label": "t:sections.multicolumn.settings.background_style.options__2.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.multicolumn.settings.background_style.options__3.label"
+        }
+      ],
+      "default": "primary",
+      "label": "t:sections.multicolumn.settings.background_style.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "stacked_components",
+      "default": false,
+      "label": "Enable stacked components"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "t:sections.multicolumn.settings.swipe_on_mobile.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "t:sections.multicolumn.blocks.column.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile Banner"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Featured Product"
+        },
+        {
+          "type": "range",
+          "id": "roll",
+          "min": -100,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Roll"
+        },
+        {
+          "type": "range",
+          "id": "pitch",
+          "min": -100,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Pitch"
+        },
+        {
+          "type": "range",
+          "id": "yaw",
+          "min": -100,
+          "max": 100,
+          "step": 5,
+          "default": 0,
+          "label": "Yaw"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Column",
+          "label": "t:sections.multicolumn.blocks.column.settings.title.label"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+          "label": "t:sections.multicolumn.blocks.column.settings.text.label"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "t:sections.multicolumn.blocks.column.settings.link_label.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.multicolumn.blocks.column.settings.link.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "link_label_color",
+          "label": "Light Link Label?"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_overlay",
+          "label": "Overlay?"
+        },
+        {
+          "type": "checkbox",
+          "id": "light_overlay",
+          "label": "Light Overlay?"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multicolumn Hero",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

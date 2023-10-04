@@ -1,0 +1,156 @@
+{{ 'section-marquee.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  if section.settings.link != blank
+    assign marquee_element = 'a'
+    assign marquee_link = section.settings.link
+  else
+    assign marquee_element = 'span'
+  endif
+-%}
+
+<div class="marquee-section marquee-section--{{ section.id }}" role="region" aria-label="Marquee">
+  {% assign marquee_element = marquee_element | default: 'span' %}
+
+  <marquee-element class="marquee {{ classes }}" {{ attrs }} tabindex="0" role="button" data-marquee>
+    <{{ marquee_element }}{% if marquee_link != blank %} href="{{ marquee_link }}" title="Marquee Link"{% endif %} class="marquee__content">
+      {%- for i in (1..2) -%}
+        <span>
+          {%- for block in section.blocks -%}
+            {%- if block.settings.brand_logo != blank -%}
+              <div class="marquee__brand-logo">
+                {{ block.settings.brand_logo | image_url: width: 1000 | image_tag }}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </span>
+      {%- endfor-%}
+    </{{ marquee_element }}>
+
+    <button class="marquee__movement" aria-label="Toggle marquee movement" data-marquee-movement>
+      {% render 'icon-pause' %}
+      {% render 'icon-play' %}
+    </button>
+  </marquee-element>
+</div>
+
+{%- style -%}
+  .marquee-section--{{ section.id }} {
+    --marquee-spacing: {{ section.settings.logo_spacing }}px;
+    --marquee-background-color: {{ section.settings.background_color }};
+    --marquee-text-color: #000000;
+    --marquee-speed: {{ section.settings.speed }}s;
+    --marquee-logo-height: {{ section.settings.logo_height -}}px;
+    --marquee-padding-top: {{ section.settings.padding_top }}px;
+    --marquee-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<script>
+  (() => {
+    if (typeof window.customElements.get('marquee-element') !== 'undefined') { return }
+    window.customElements.define('marquee-element', class CustomHtmlElement extends HTMLElement {
+      constructor () {
+        super()
+  
+        this.trigger = this.querySelector('[data-marquee-movement]')
+  
+        this.trigger.addEventListener('click', () => {
+          this.classList.toggle('animation-paused')
+        })
+      }
+    })
+  })()
+</script>
+
+{% schema %}
+{
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "number",
+      "id": "speed",
+      "label": "Speed",
+      "default": 65,
+      "info": "Duration of animation in seconds. Higher the number the slower the scroll speed"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 16,
+      "max": 44,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo height",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "logo_spacing",
+      "min": 20,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo spacing",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "Optional. Link will apply to the content if set."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "image_picker", 
+          "id": "brand_logo", 
+          "label": "Brand logo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brag Bar"
+    }
+  ]
+}
+{% endschema %}

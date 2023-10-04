@@ -1,0 +1,202 @@
+
+
+<style>
+
+  .video-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    
+  }
+
+  .video-wrapper-mobile {
+    display: flex;
+    margin-top: -30px;
+  }
+
+  .form-overlay {
+/*     position: absolute; */
+    background-color: white;
+/*     width: 90%; */
+/*     margin-top: -30px;
+    margin-bottom: 5px; */
+  }
+
+  .desktop-video {
+    width: 100%;
+  }
+
+  .video-wrapper-desktop {
+    display: none;
+  }
+
+  .glyph-form .klaviyo-form {
+    background-color: transparent!important;
+  }
+
+  .mobile-video {
+    width: 100%;
+  }
+
+
+  @media only screen and (min-width: 625px) {
+    .video-wrapper-mobile {
+      display: none;
+    }
+    .video-wrapper-desktop {
+      display: flex;
+    }
+    .video-wrapper-3, .video-wrapper-2 {
+      display:none;
+    }
+
+    .video-container {
+      flex-wrap: nowrap;
+    }
+  }
+
+  @media only screen and (min-width: 1100px) {
+    
+    .video-wrapper-3, .video-wrapper-2 {
+      display:block;
+    }
+
+    .video-container {
+      margin-bottom: -25px;
+    }
+
+    .form-overlay {
+      position: absolute;
+    width: auto;
+/*       top: 10%; */
+      background-color: white;
+  }
+  }
+</style>
+
+<div class="video-container">
+
+  <div class="video-wrapper-desktop">
+      <div class="video-wrapper">
+          <video class="desktop-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/344b3ca58ac6468b8510caf94db211a1.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/344b3ca58ac6468b8510caf94db211a1.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+    
+      <div class="video-wrapper-2">
+          <video class="desktop-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/f698e79a262a463e8769429082d4fd2d.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/f698e79a262a463e8769429082d4fd2d.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+    
+      <div class="video-wrapper-3">
+          <video class="desktop-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/344b3ca58ac6468b8510caf94db211a1.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/344b3ca58ac6468b8510caf94db211a1.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+
+      <div class="video-wrapper-3">
+            <video class="desktop-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/f698e79a262a463e8769429082d4fd2d.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/f698e79a262a463e8769429082d4fd2d.mp4"
+                          type="video/mp4">
+            </video>
+        </div>
+  </div>
+
+  <div class="video-wrapper-mobile">
+    <div class="video-wrapper">
+          <video class="mobile-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/9ab3dfe73ec7440a9595bedb258f6b3b.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/9ab3dfe73ec7440a9595bedb258f6b3b.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+    <div class="video-wrapper">
+          <video class="mobile-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/87896abf88844337aa15f008e13270c5.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/87896abf88844337aa15f008e13270c5.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+    <div class="video-wrapper">
+          <video class="mobile-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/9ab3dfe73ec7440a9595bedb258f6b3b.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/9ab3dfe73ec7440a9595bedb258f6b3b.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+    <div class="video-wrapper">
+          <video class="mobile-video" autoplay loop muted playsinline>
+              <source src="https://cdn.shopify.com/videos/c/o/v/87896abf88844337aa15f008e13270c5.mp4"
+                          type="video/mp4">
+              <source src="https://cdn.shopify.com/videos/c/o/v/87896abf88844337aa15f008e13270c5.mp4"
+                          type="video/mp4">
+          </video>
+      </div>
+  </div>
+
+  <div class="form-overlay">
+    
+     <!-- Display the countdown timer in an element -->
+    <div class="glyph-form">
+    <span style="text-align: center; display: block; padding-top: 20px; letter-spacing: 0.5px; margin-bottom: -20px;"><span id="demo" style="text-align: center;"></span><span> until</span></span>
+    {{ page.content }}
+    <div class="klaviyo-form-XWFWQu"></div>
+    <div class="klaviyo-form-SH3Nw5"></div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date("Nov 11, 2022 00:00:00").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+  
+
+
+  
+</script>

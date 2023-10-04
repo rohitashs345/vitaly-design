@@ -1,0 +1,118 @@
+.main-page {
+  margin-bottom: 30px;
+}
+
+.page-title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 30px;
+}
+
+.main-page-title {
+  margin-top: 30px;
+  margin-bottom: 3rem;
+}
+
+@media screen and (min-width: 750px) {
+  .main-page-title {
+    margin-top: 50px;
+    margin-bottom: 4rem;
+  }
+
+  .main-page {
+    margin-bottom: 50px;
+  }
+}
+
+.page-placeholder-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.page-placeholder {
+  width: 52.5rem;
+  height: 52.5rem;
+}
+
+/*   sizing page styles */
+
+.sizing-information .split-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.sizing-information .split-content .split-content__image,
+.sizing-information .split-content .split-content__text {
+  width: calc(50% - 15px);
+}
+
+.sizing-information .split-content iframe {
+  width: 100%;
+}
+
+.split-content__right {
+  order: 1;
+}
+
+.sizing-information h2 {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.sizing-information h3 {
+  text-transform: uppercase;
+}
+
+.sizing-information table {
+  margin-bottom: 60px;
+  display: flex;
+  width: 100%;
+}
+
+.sizing-information .rte p:first-of-type {
+  text-align: center;
+}
+
+.sizing-information tbody {
+  display: flex;
+  width: 100%;
+}
+
+.sizing-information tr {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  text-align: center;
+}
+
+.sizing-information table tbody th:first-child {
+  min-height: 60px;
+  padding: 0.8rem 1.2rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0.5px solid black !important;
+}
+
+.sizing-information td {
+  padding: 0.8rem 1.2rem !important;
+  border: 0.5px solid black !important;
+}
+
+@media screen and (max-width: 750px) {
+  .sizing-information .split-content {
+    flex-direction: column;
+  }
+  .sizing-information .split-content__image {
+    order: 1;
+  }
+  .sizing-information .split-content .split-content__image,
+  .sizing-information .split-content .split-content__text {
+    width: auto;
+  }
+  .sizing-information table tbody th:first-child {
+    min-height: 85px;
+  }
+}

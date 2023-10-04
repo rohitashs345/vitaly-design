@@ -32,10 +32,10 @@
             </li>
           </ul>
           <div class="sizing-guide__tab-content content-info__with-ring" data-tab="content">
-            {{ block.settings.page_1.content }}
+            {{ block.settings.page_1.content | replace: '<iframe' , '<iframelazy data-class="LazyLoad"' | replace: '</iframe' , '</iframelazy' | replace: ' src="https://player.vimeo.com/' , ' data-src="https://player.vimeo.com/' }}
           </div>
           <div class="sizing-guide__tab-content content-info__without-ring" data-tab="content">
-            {{ block.settings.page_2.content }}
+            {{ block.settings.page_2.content | replace: '<iframe' , '<iframelazy data-class="LazyLoad"' | replace: '</iframe' , '</iframelazy' | replace: ' src="https://player.vimeo.com/' , ' data-src="https://player.vimeo.com/' }}
           </div>
         </tab-component>
       </div>

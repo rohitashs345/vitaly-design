@@ -1,6 +1,5 @@
-{{ 'component-slider.css' | asset_url | stylesheet_tag }}
-{{ 'announcement-bar-dynamic.css' | asset_url | stylesheet_tag }}
-
+<link rel="stylesheet" data-href="{{ 'component-slider.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'announcement-bar-dynamic.css' | asset_url }}">
 <div class="announcement-bar-dynamic" role="region" aria-label="{{ 'sections.header.announcement' | t }}" {{ section.shopify_attributes }}>
   {% if section.settings.show_popup == true %}
     <modal-opener

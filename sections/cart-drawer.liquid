@@ -1,9 +1,8 @@
-{{ 'component-cart.css' | asset_url | stylesheet_tag }}
-{{ 'component-mini-cart.css' | asset_url | stylesheet_tag }}
-{{ 'component-totals.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
-
+<link rel="stylesheet" data-href="{{ 'component-cart.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-mini-cart.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-totals.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-price.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-discounts.css' | asset_url }}">
 {% style %}
   .sfl-wrapper {
     display: block;
@@ -242,7 +241,7 @@
   </sfl-wrapper>
 </div>
 
-<script>
+<script type="lazyload_int">
   class CartNote extends HTMLElement {
     constructor() {
       super();
@@ -260,7 +259,7 @@
   customElements.define('cart-note', CartNote);
 </script>
 
-<script>
+<script type="lazyload_int">
   document.addEventListener('DOMContentLoaded', function () {
     function isIE() {
       const ua = window.navigator.userAgent;

@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-cart-notification.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" data-href="{{ 'component-list-menu.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-search.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-menu-drawer.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-cart-notification.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-cart-items.css' | asset_url }}">
 {%- if settings.predictive_search_enabled -%}
-  <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="{{ 'component-loading-overlay.css' | asset_url }}" media="print" onload="this.media='all'">
+  <link rel="stylesheet" data-href="{{ 'component-price.css' | asset_url }}">
+  <link rel="stylesheet" data-href="{{ 'component-loading-overlay.css' | asset_url }}">
 {%- endif -%}
 
 <noscript>{{ 'component-list-menu.css' | asset_url | stylesheet_tag }}</noscript>
@@ -125,9 +125,9 @@
   }
 </style>
 
-<script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
-<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+<script type="lazyload_int" data-src="{{ 'details-disclosure.js' | asset_url }}"></script>
+<script type="lazyload_int" data-src="{{ 'details-modal.js' | asset_url }}"></script>
+<script type="lazyload_int" data-src="{{ 'cart-notification.js' | asset_url }}"></script>
 
 <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
   <symbol id="icon-search" viewbox="0 0 18 19" fill="none">
@@ -624,7 +624,7 @@
 
 {%- render 'cart-notification', color_scheme: section.settings.color_scheme -%}
 
-{% javascript %}
+<script type="lazyload_int">
   //  We aren't using this sticky header... 
   class StickyHeader extends HTMLElement {
     constructor() {
@@ -717,10 +717,10 @@
   }
 
   customElements.define('sticky-header', StickyHeader);
-{% endjavascript %}
+</script>
 
 {%- if section.settings.use_logo_scroll and section.settings.logo_scroll != blank -%}
-  <script>
+  <script type="lazyload_int">
     // wordmark to logo fade in header
     function logoScrollInit() {
       window.addEventListener('scroll', () => {

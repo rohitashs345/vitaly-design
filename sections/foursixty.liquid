@@ -63,15 +63,14 @@
     <div>
       {% if section.settings.for_pdp == false %}
         <div class="desktop_foursixty_gallery">
-          <script
-            src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
+          <script type="lazyload_int"
+            data-src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
             data-defer-image-loading="true"
             data-feed-id="vitaly-design"
             data-theme="showcase_v2_5"
             data-open-links-in-same-page="true"
             data-connector-filter="40487"
             data-page-size="8"
-            defer
           ></script>
           <style>
             .fs-has-links::after {
@@ -133,8 +132,8 @@
       {% endif %}
       {% if section.settings.for_pdp %}
         <div class="desktop_foursixty_gallery" style="display: none;">
-          <script
-            src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
+          <script type="lazyload_int"
+            data-src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
             data-defer-image-loading="true"
             data-feed-id="vitaly-design"
             data-theme="showcase_v2_5"
@@ -200,8 +199,8 @@
           </style>
         </div>
         <div class="mobile_foursixty_gallery" style="display: none;">
-          <script
-            src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
+          <script  type="lazyload_int"
+            data-src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
             data-defer-image-loading="true"
             data-feed-id="vitaly-design"
             data-theme="showcase_v2_5"
@@ -264,8 +263,8 @@
           </style>
         </div>
         <div class="mobile_foursixty_gallery-pdp-grid" style="display: none;">
-          <script
-            src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
+          <script type="lazyload_int"
+            data-src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
             data-defer-image-loading="true"
             data-feed-id="vitaly-design"
             data-theme="showcase_v2_5"
@@ -334,8 +333,8 @@
         </div>
         <div class="desktop_foursixty_gallery-pdp-slider" style="display: none;">
           <div id="foursixty-hideable-container">
-            <script
-              src="//foursixty.com/media/scripts/fs.slider.v2.5.js"
+            <script type="lazyload_int"
+              data-src="//foursixty.com/media/scripts/fs.slider.v2.5.js"
               data-defer-image-loading="true"
               data-feed-id="vitaly-design"
               data-theme="slider_v2_5"
@@ -407,8 +406,8 @@
           </div>
         </div>
         <div class="desktop_foursixty_gallery-pdp-grid" style="display: none;">
-          <script
-            src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
+          <script type="lazyload_int"
+            data-src="//foursixty.com/media/scripts/fs.embed.v2.5.js"
             data-defer-image-loading="false"
             data-feed-id="vitaly-design"
             data-theme="showcase_v2_5"
@@ -787,7 +786,7 @@
 {% endstyle %}
 
 {% if section.settings.for_pdp %}
-  <script>
+  <script type="lazyload_int">
     setTimeout(function () {
       var pageWidth = document.querySelector('body').scrollWidth;
 

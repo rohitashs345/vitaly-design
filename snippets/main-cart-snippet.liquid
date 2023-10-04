@@ -1,13 +1,13 @@
-{{ 'component-cart.css' | asset_url | stylesheet_tag }}
-{{ 'component-mini-cart.css' | asset_url | stylesheet_tag }}
-{{ 'component-totals.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
-{{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
-{{ 'component-slider.css' | asset_url | stylesheet_tag }}
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" data-href="{{ 'component-cart.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-mini-cart.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-totals.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-price.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-discounts.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-loading-overlay.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-slider.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'component-card.css' | asset_url }}">
 
-<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+<script type="lazyload_int" data-src="{{ 'cart.js' | asset_url }}"></script>
 
 <cart-items class="{% if cart == empty %} is-empty{% endif %}">
   <div class="cart__warnings">

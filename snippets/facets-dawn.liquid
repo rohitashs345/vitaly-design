@@ -12,8 +12,7 @@
   Usage:
   {% render 'facets', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical', paginate: paginate %}
 {% endcomment %}
-
-{{ 'component-show-more.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" data-href="{{ 'component-show-more.css' | asset_url }}">
 
 {%- liquid
   assign sort_by = results.sort_by | default: results.default_sort_by
@@ -199,7 +198,7 @@
               </div>
             {%- endif -%}
 
-            <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
+            <script type="lazyload_int" data-src="{{ 'show-more.js' | asset_url }}"></script>
             {% comment %} Filters for both horizontal and vertical filter {% endcomment %}
             {%- for filter in results.filters -%}
               {%- assign total_active_values = total_active_values | plus: filter.active_values.size -%}

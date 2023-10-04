@@ -36,8 +36,8 @@
       {%- if show_image == true and article.image -%}
         <div class="article-card__image-wrapper">
           <div class="article-card__image media" style="padding-bottom: 120%;">
-            <img
-              srcset="
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-class="LazyLoad"
+              data-srcset="
                 {%- if article.image.src.width >= 165 -%}{{ article.image.src | image_url: width: 165 }} 165w,{%- endif -%}
                 {%- if article.image.src.width >= 360 -%}{{ article.image.src | image_url: width: 360 }} 360w,{%- endif -%}
                 {%- if article.image.src.width >= 533 -%}{{ article.image.src | image_url: width: 533 }} 533w,{%- endif -%}
@@ -46,7 +46,7 @@
                 {%- if article.image.src.width >= 1500 -%}{{ article.image.src | image_url: width: 1500 }} 1500w,{%- endif -%}
                 {{ article.image.src | image_url }} {{ article.image.src.width }}w
               "
-              src="{{ article.image.src | image_url: width: 533 }}"
+              data-src="{{ article.image.src | image_url: width: 533 }}"
               sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
               alt="{{ article.image.src.alt | escape }}"
               width="{{ article.image.width }}"

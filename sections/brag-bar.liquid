@@ -1,5 +1,9 @@
-{{ 'section-marquee.css' | asset_url | stylesheet_tag }}
-
+{% if template contains 'index' or template contains 'collection' or template contains 'product' %}
+    
+{% else %}
+    <style>.marquee{display:block;position:relative;z-index:1;padding:var(--marquee-padding-top) 0 var(--marquee-padding-bottom);overflow:hidden;background-color:var(--marquee-background-color)}.marquee__content{display:flex;align-items:center;justify-content:flex-start;width:100%}.marquee__content:hover>span,.marquee__content:hover>a,.marquee.animation-paused .marquee__content>span,.marquee.animation-paused .marquee__content>a{-webkit-animation-play-state:paused;animation-play-state:paused}.marquee__content>span,.marquee__content>a{display:flex;align-items:center;transform:translate(0);-webkit-animation:marquee var(--marquee-speed, 8s) linear infinite;animation:marquee var(--marquee-speed, 8s) linear infinite;-webkit-animation-play-state:running;animation-play-state:running;background-color:var(--marquee-background-color);color:var(--marquee-text-color);text-transform:uppercase;white-space:nowrap;will-change:transform;font-size:2.4rem;line-height:3.2rem;font-weight:700}.marquee__content svg{display:block;width:32px;height:auto;margin:0 17px}.marquee__content svg path{fill:var(--marquee-text-color)}.marquee__movement{display:none;position:absolute;top:50%;right:0;align-items:center;justify-content:center;width:48px;height:48px;transform:translateY(-50%);border:2px solid #000;border-radius:50%;background-color:#fff}.marquee:focus .marquee__movement,.marquee:focus-within .marquee__movement{display:flex}.marquee.animation-paused .marquee__movement .icon-play{display:block}.marquee.animation-paused .marquee__movement .icon-pause{display:none}.marquee__movement svg{display:block}.marquee__movement svg.icon-play{display:none}.marquee-squiggle{display:inline-block;position:relative}.marquee-squiggle__copy{position:relative;z-index:1}.marquee-squiggle__wrapper{display:flex;position:absolute;bottom:-10px;align-items:center;justify-content:flex-start;width:100%;overflow:hidden}@media screen and (min-width: 750px){.marquee-squiggle__wrapper{width:calc(100% + 6px)}}@media screen and (min-width: 1025px){.marquee-squiggle__wrapper{bottom:-18px;width:calc(100% + 12px)}}.heading-2 .marquee-squiggle__wrapper,.heading-lg-2 .marquee-squiggle__wrapper{bottom:-12px;width:100%}.marquee-squiggle__wrapper:hover>span{-webkit-animation-play-state:paused;animation-play-state:paused}.marquee-squiggle__wrapper>span{display:block;transform:translate(0);-webkit-animation:marquee 1s linear infinite;animation:marquee 1s linear infinite;animation-direction:reverse;white-space:nowrap;will-change:transform}.marquee-squiggle__wrapper svg{display:block;width:auto;height:3.2vw;margin-left:-2.1333vw}@media screen and (min-width: 750px){.marquee-squiggle__wrapper svg{height:1.6666vw;margin-left:-.5555vw}}@media screen and (min-width: 750px){.heading-2 .marquee-squiggle__wrapper svg,.heading-lg-2 .marquee-squiggle__wrapper svg{height:1.5vw}}.heading-4 .marquee-squiggle__wrapper svg,.heading-lg-4 .marquee-squiggle__wrapper svg{height:2vw;margin-left:-1.85vw}@media screen and (min-width: 750px){.heading-4 .marquee-squiggle__wrapper svg,.heading-lg-4 .marquee-squiggle__wrapper svg{height:1vw;margin-left:-.75vw}}@-webkit-keyframes marquee{0%{transform:translate(-100%)}to{transform:translate(0)}}@keyframes marquee{0%{transform:translate(-100%)}to{transform:translate(0)}}.marquee-section--final{margin-bottom:68.2667vw}@media screen and (min-width: 750px){.marquee-section--final{margin-bottom:13vw}}.marquee__brand-logo{padding:0 var(--marquee-spacing);height:var(--marquee-logo-height)}.marquee__brand-logo img{height:100%;width:auto}.marquee__separator-icon{width:var(--marquee-separator-icon-width);height:auto;margin:0 24px}</style>
+{% endif %}
+<link rel="stylesheet" data-href="{{ 'section-marquee.css' | asset_url }}">
 {%- liquid
   if section.settings.link != blank
     assign marquee_element = 'a'
@@ -19,7 +23,7 @@
           {%- for block in section.blocks -%}
             {%- if block.settings.brand_logo != blank -%}
               <div class="marquee__brand-logo">
-                {{ block.settings.brand_logo | image_url: width: 1000 | image_tag }}
+                {{ block.settings.brand_logo | image_url: width: 1000 | image_tag | replace: ' src="' , ' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-class="LazyLoad" data-src="' | replace: ' srcset="' , ' data-srcset="' }}
               </div>
             {%- endif -%}
           {%- endfor -%}
@@ -46,7 +50,7 @@
   }
 {%- endstyle -%}
 
-<script>
+<script type="lazyload_int">
   (() => {
     if (typeof window.customElements.get('marquee-element') !== 'undefined') { return }
     window.customElements.define('marquee-element', class CustomHtmlElement extends HTMLElement {

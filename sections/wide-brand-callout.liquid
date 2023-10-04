@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'section-rich-text.css' | asset_url }}" media="print" onload="this.media='all'">
-<link
-  rel="stylesheet"
-  href="{{ 'section-wide-brand-callout.css' | asset_url }}"
-  media="print"
-  onload="this.media='all'"
->
+{% if template contains 'index' or template contains 'collection' or template contains 'product' %}
+    
+{% else %}
+    <style>.rte:after{clear:both;content:"";display:block}.rte>p:first-child,.text-and-heading__single h2{margin-top:0}.rte li:last-child,.rte>p:last-child{margin-bottom:0}.rte table{table-layout:fixed}.rte img{display:block;height:auto;max-width:100%;margin-bottom:-.5rem}.rte ul{padding-left:2rem}.rte li{list-style:inherit}.rte a{color:rgba(var(--color-base-accent-1));text-underline-offset:.3rem;text-decoration-thickness:.1rem;transition:text-decoration-thickness var(--duration-short) ease;text-decoration-skip-ink:none}.rte a:hover{color:rgb(var(--color-link))}.rte blockquote{display:inline-flex}.rte blockquote>*{margin:-.5rem 0}.rich-text{margin:auto;text-align:center}.rich-text.rich-text--full-width{max-width:initial;width:100%}.rich-text__blocks{margin:auto;width:calc(100% - 5rem / var(--font-body-scale))}.rich-text__blocks *{overflow-wrap:break-word}.rich-text--full-width .rich-text__blocks{width:calc(100% - 8rem / var(--font-body-scale))}.rich-text--full-width.color-background-1,.rich-text:not(.rich-text--full-width){margin-top:24px}.rich-text:not(.color-background-1){padding-top:5rem;padding-bottom:5rem}@media screen and (min-width:990px){.rich-text__blocks{max-width:78rem}}.rich-text__blocks>*{margin-top:0;margin-bottom:0}.rich-text__blocks>*+*{margin-top:2rem}.rich-text__blocks>*+a{margin-top:3rem}.sale-rich-text-heading{font-size:14px}.sale-rich-text-heading .rich-text__text{margin:5px 0 20px}.wide-brand-callout{border:1px solid rgba(var(--color-base-accent-1));padding:16px}.wide-brand-callout__blocks{display:flex;flex-direction:column}.wide-brand-callout__logo-and-heading{display:flex;align-items:center;height:100%}.wide-brand-callout__logo-and-heading h2{margin:0;padding-left:20px;max-width:60%}.wide-brand-callout__heading-and-text h2{margin:27px 0 12px}.wide-brand-callout__logo{width:5%;height:5%;min-width:45px;min-height:45px}.wide-brand-callout__blocks h2{font-size:22px;line-height:24px}.wide-brand-callout__blocks p{font-size:14px}@media screen and (min-width:750px){.rte table td{padding-left:1.2rem;padding-right:1.2rem}.rich-text--full-width.color-background-1,.rich-text:not(.rich-text--full-width){margin-top:24px}.rich-text--full-width .rich-text__blocks{width:calc(100% - 15rem)}.wide-brand-callout__blocks{flex-direction:row;justify-content:space-between}.wide-brand-callout{padding:30px}.wide-brand-callout__heading-and-text{width:50%}.text-and-heading__single{width:100%}.wide-brand-callout__heading-and-text h2{margin:0 0 18px}.wide-brand-callout__blocks h2{font-size:40px;line-height:42px}.wide-brand-callout__blocks p{font-size:16px}.wide-brand-callout__logo{width:5%;height:5%;min-width:77px;min-height:77px}.wide-brand-callout__logo-and-heading h2{padding-left:40px}}@media screen and (min-width:950px){.wide-brand-callout__heading-and-text{padding-right:5%}.text-and-heading__single{padding-right:0}}</style>
+{% endif %}
+<link rel="stylesheet" data-href="{{ 'component-rte.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'section-rich-text.css' | asset_url }}">
+<link rel="stylesheet" data-href="{{ 'section-wide-brand-callout.css' | asset_url }}">
 
 <noscript>{{ 'component-rte.css' | asset_url | stylesheet_tag }}</noscript>
 <noscript>{{ 'section-rich-text.css' | asset_url | stylesheet_tag }}</noscript>

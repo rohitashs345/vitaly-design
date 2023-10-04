@@ -1,656 +1,607 @@
 <!doctype html>
 <html class="no-js" lang="{{ request.locale.iso_code }}">
-  <head>
-<!-- Begin BlackCrow Script Tag: DO NOT MODIFY! -->
-     <script type="text/javascript" async src="https://shopify-init.blackcrow.ai/js/core/vitaly-design.js?shopify_app_version=1.0.195&shop=vitaly-design.myshopify.com"></script>
+    <head>
+        {% render 'wnw_header' %}
+        <!-- Begin BlackCrow Script Tag: DO NOT MODIFY! -->
+     <script type="text/javascript" async src="https://shopify-init.blackcrow.ai/js/core/vitaly-design.js?shopify_app_version=1.0.196&shop=vitaly-design.myshopify.com"></script>
 <!-- End BlackCrow Script Tag -->
-    <!-- Wunderkind -->
-    {%- if settings.wunderkind_enabled == true -%}
-      <script>
-        (function (d) {
-          var e = d.createElement('script');
-          e.src = d.location.protocol + '//tag.wknd.ai/6272/i.js';
-          e.async = true;
-          d.getElementsByTagName('head')[0].appendChild(e);
-        })(document);
-      </script>
-      <script>
-        window.wunderkind = window.wunderkind  || {};
-        window.wunderkind.cart = {
-          value: {{ cart.total_price | divided_by: 100 }},
-          quantity: {{ cart.item_count }},
-        };
-        {% if customer -%}
-          window.wunderkind.user = {
-            email: '{{ customer.email }}',
-          };
-        {%- endif %}
-
-        document.addEventListener("cart:item-added", (e) => {
-          window.wunderkind.cart.value = window.wunderkind.cart.value + (e.detail.finalPrice / 100);
-          window.wunderkind.cart.quantity = window.wunderkind.cart.quantity + 1;
-          console.log('[W]: Item added to cart: ', window.wunderkind)
-        });
-
-        document.addEventListener("cart:updated", (e) => {
-          window.wunderkind.cart.value = e.detail.totalPrice / 100;
-          window.wunderkind.cart.quantity = e.detail.itemCount;
-          console.log('[W]: Cart updated: ', window.wunderkind)
-        });
-      </script>
-      {% if template.name == 'collection' -%}
-        {%- capture category_ids -%}
-          {%- for product in collection.products -%} 
-            '{{- product.id -}}'{%- unless forloop.last -%},{%- endunless -%}
-          {%- endfor -%}
-        {%- endcapture %}
-        <script>
-          
-          function getCollectionTitle () {
-            {% comment %} This function is currently necessary because collections are created through filtering. {% endcomment %}
-            const currentUrl = window.location.href;
-            let collectionTitle = '';
-            if (currentUrl.includes('/collections/accessories/')) {
-              collectionTitle = currentUrl.replace('https://www.vitalydesign.com/collections/accessories/', '');
-            } else {
-              collectionTitle = '{{ collection.title }}';
-            }
-            return collectionTitle;
-          };
-
-          window.wunderkind = window.wunderkind  || {};
-          window.wunderkind.category = {
-            categoryIds: [{{ category_ids }}],
-            title: `${ getCollectionTitle() }`,
-          };
-
-        </script>
-      {%- elsif template.name == 'product' -%}
-        <script>
-          window.wunderkind = window.wunderkind  || {};
-          window.wunderkind.product = {
-            id: '{{ product.id }}',
-            sku: '{{ product.selected_or_first_available_variant.id }}',
-            name: '{{ product.title }}',
-            url: 'https://www.vitalydesign.com{{ product.url }}',
-            imgUrl: 'https://www.vitalydesign.com/cdn/shop/{{ product.featured_image.src }}',
-            price: {{ product.selected_or_first_available_variant.price | divided_by: 100 }},
-            inStock: {{ product.selected_or_first_available_variant.available }},
-            itemCategory: '{{ product.type }}',
-          }
-          document.addEventListener("variant:change", (e) => {
-            window.wunderkind.product.sku = e.detail.currentVariant.id;
-          });
-        </script>
-      {%- endif %}
-    {%- endif -%}
-    <!-- Wunderkind - End -->
-
-    {% if settings.gtm_head != blank -%}{{ settings.gtm_head }}{%- endif %}
-
-    {%- if settings.google_optimize_id != blank and settings.google_optimize_enabled == true -%}
-      <script src="https://www.googleoptimize.com/optimize.js?id={{ settings.google_optimize_id }}"></script>
-    {%- endif -%}
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="">
-    <link rel="canonical" href="{{ canonical_url }}">
-    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
-    <meta name="format-detection" content="telephone=no">
-
-    {%- if settings.favicon != blank -%}
-      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
-    {%- endif -%}
-
-    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
-      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    {%- endunless -%}
-
-    <title>
-      {{ page_title }}
-      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
-      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
-    </title>
-
-    <!-- Location Redirect -->
-    {% if settings.redirect_use %}
-      {% unless template contains 'article'
-        or template contains 'customer'
-        or template.suffix contains 'glyph'
-        or template contains 'tiktok'
-        or template.suffix contains 'giveaway'
-        or template.suffix contains '700'
-        or template.suffix contains 'sign'
-        or template.suffix contains 'rebrand'
-        or page.url contains 'assets'
-        or page.url contains 'futurefund'
-        or page.url contains 'unhcr'
-        or page.url contains 'retail'
-        or page.url contains 'subscribe'
-        or content_for_header contains 'previewBarInjector.init();'
-      %}
-        {{ 'redirect-no-jquery.js' | asset_url | script_tag }}
-        <script>
-          IPRedirect.init({{ settings | json }});
-          IPRedirect.run();
-        </script>
-      {% endunless %}
-    {% endif %}
-    <!-- Location Redirect - End -->
-
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
-
-    {% render 'meta-tags' %}
-
-    <!-- Ship Scout - Start -->
-    <script>
-      window._shipScout = window._shipScout || [];
-      _shipScout.push(function(response) {
-
-        console.log('Ship Scout response: ', response);
-
-        //apply any exchange rates to currency if necessary
-        const thresholdCents = (window.Shopify && Shopify.currency && Shopify.currency.rate) ? response.freeShippingThresholdCents * Shopify.currency.rate : response.freeShippingThresholdCents;
-        const flatrateCents = (window.Shopify && Shopify.currency && Shopify.currency.rate) ? response.shippingPriceCents * Shopify.currency.rate : response.shippingPriceCents;
-
-        //format currency
-        const currencyFormat = ShipScoutGetCurrency();
-        
-        //get threshold amount with currency symbol
-        const thresholdAmount = ShipScoutFormatMoney(thresholdCents, currencyFormat);
-
-        //get flat rate amount with currency symbol
-        const flatrateAmount = ShipScoutFormatMoney(flatrateCents, currencyFormat);
-
-        {% comment %} window.shipScoutTestObject = {
-          title: 'Free Express Shipping',
-          threshold: 200,
-          messageText: 'Free Express Shipping',
-        } {% endcomment %}
-
-        window.shipScoutTestObject = {
-          title: 'Free Shipping',
-          threshold: Math.floor(thresholdCents / 100),
-          messageText: 'Free Shipping',
-        } 
-
-        const progressBar = document.querySelector('progress-bar');
-        if (progressBar != null) { 
-          console.log('progressBar exists... rerendering progress bar...')
-          progressBar.init(); 
-        }
-
-        // Finds all elements with the attribute data-ship-scout-amount and updates the text to the threshold amount
-        const shipScoutAmounts = document.querySelectorAll('[data-ship-scout-amount]');
-        shipScoutAmounts.forEach( amount => {
-          amount.textContent = thresholdAmount;
-        });
-        
-        // Finds all Ship Scout Announcements and displays them. 
-        const shipScoutAnnouncements = document.querySelectorAll('[data-ship-scout-announcement]');
-        shipScoutAnnouncements.forEach( announcement => {
-          announcement.style.display = 'flex';
-        });
-
-        // Finds all Ship Scout Benefits and displays them. 
-        const shipScoutBenefits = document.querySelectorAll('[data-ship-scout-benefit]');
-        shipScoutBenefits.forEach( benefit => {
-          benefit.style.display = 'block';
-        });
-      });
-    </script>
-    <!-- Ship Scout - End -->
-
-    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
-
-    {{ content_for_header }}
-
-    {%- liquid
-      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
-      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
-      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
-    %}
-
-    {%- style -%}
-      {{ settings.type_body_font | font_face: font_display: 'swap' }}
-      {{ body_font_bold | font_face: font_display: 'swap' }}
-      {{ body_font_italic | font_face: font_display: 'swap' }}
-      {{ body_font_bold_italic | font_face: font_display: 'swap' }}
-      {{ settings.type_header_font | font_face: font_display: 'swap' }}
-
-      :root {
-        --font-body-family: "GerstnerProgramm";
-        --font-body-style: {{ settings.type_body_font.style }};
-        --font-body-weight: {{ settings.type_body_font.weight }};
-
-        --font-heading-family: "GerstnerProgramm";
-        --font-heading-style: {{ settings.type_header_font.style }};
-        --font-heading-weight: {{ settings.type_header_font.weight }};
-
-        --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
-        --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
-
-        --color-base-text: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
-        --color-base-background-1: {{ settings.colors_background_1.red }}, {{ settings.colors_background_1.green }}, {{ settings.colors_background_1.blue }};
-        --color-base-background-2: {{ settings.colors_background_2.red }}, {{ settings.colors_background_2.green }}, {{ settings.colors_background_2.blue }};
-        --color-base-solid-button-labels: {{ settings.colors_solid_button_labels.red }}, {{ settings.colors_solid_button_labels.green }}, {{ settings.colors_solid_button_labels.blue }};
-        --color-base-outline-button-labels: {{ settings.colors_outline_button_labels.red }}, {{ settings.colors_outline_button_labels.green }}, {{ settings.colors_outline_button_labels.blue }};
-        --color-base-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
-        --color-base-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
-        --payment-terms-background-color: {{ settings.colors_background_1 }};
-        --color-sale-price: {{ settings.sale_price_color }};
-
-        --gradient-base-background-1: {% if settings.gradient_background_1 != blank %}{{ settings.gradient_background_1 }}{% else %}{{ settings.colors_background_1 }}{% endif %};
-        --gradient-base-background-2: {% if settings.gradient_background_2 != blank %}{{ settings.gradient_background_2 }}{% else %}{{ settings.colors_background_2 }}{% endif %};
-        --gradient-base-accent-1: {% if settings.gradient_accent_1 != blank %}{{ settings.gradient_accent_1 }}{% else %}{{ settings.colors_accent_1 }}{% endif %};
-        --gradient-base-accent-2: {% if settings.gradient_accent_2 != blank %}{{ settings.gradient_accent_2 }}{% else %}{{ settings.colors_accent_2 }}{% endif %};
-
-        --page-width: {{ settings.page_width | divided_by: 10 }}rem;
-        --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
-
-        {%- if settings.swym_wishlist_enabled == true -%}
-        /* Swym */
-          --swym-wishlist-fill-color: {{ settings.swym_wishlist_fill_color }};
-          --swym-wishlist-stroke-color: {{ settings.swym_wishlist_stroke_color }};
-          --swym-wishlist-header-text-color: {{ settings.swym_wishlist_header_text_color }};
-          --swym-wishlist-card-heart-stroke-color: {{ settings.swym_wishlist_card_heart_stroke_color }};
-          --swym-wishlist-card-heart-fill-color: {{ settings.swym_wishlist_card_heart_fill_color}};
-          --swym-wishlist-pdp-heart-stroke-color: {{ settings.swym_wishlist_pdp_heart_stroke_color }};
-          --swym-wishlist-pdp-heart-fill-color: {{ settings.swym_wishlist_pdp_heart_fill_color}};
-        {%- endif -%}
-
-        --badge-corner-radius: {{ settings.badge_corner_radius | divided_by: 10.0 }}rem;
-
-        --badge-low-stock-background-color: {{ settings.badge_low_stock_background_color }};
-        --badge-low-stock-text-color: {{ settings.badge_low_stock_text_color }};
-        --badge-low-stock-border-color: {{ settings.badge_low_stock_border_color }};
-
-        --badge-sold-out-background-color: {{ settings.badge_sold_out_background_color }};
-        --badge-sold-out-text-color: {{ settings.badge_sold_out_text_color }};
-        --badge-sold-out-border-color: {{ settings.badge_sold_out_border_color }};
-
-        --badge-sale-background-color: {{ settings.badge_sale_background_color }};
-        --badge-sale-text-color: {{ settings.badge_sale_text_color }};
-        --badge-sale-border-color: {{ settings.badge_sale_border_color }};
-
-        --badge-new-background-color: {{ settings.badge_new_background_color }};
-        --badge-new-text-color: {{ settings.badge_new_text_color }};
-        --badge-new-border-color: {{ settings.badge_new_border_color }};
-
-        --badge-bestseller-background-color: {{ settings.badge_bestseller_background_color }};
-        --badge-bestseller-text-color: {{ settings.badge_bestseller_text_color }};
-        --badge-bestseller-border-color: {{ settings.badge_bestseller_border_color }};
-
-        --badge-collaboration-background-color: {{ settings.badge_collaboration_background_color }};
-        --badge-collaboration-text-color: {{ settings.badge_collaboration_text_color }};
-        --badge-collaboration-border-color: {{ settings.badge_collaboration_border_color }};
-      }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: inherit;
-      }
-
-      html {
-        box-sizing: border-box;
-        font-size: calc(var(--font-body-scale) * 62.5%);
-        height: 100%;
-      }
-
-      body {
-        display: grid;
-        grid-template-rows: auto auto 1fr auto;
-        grid-template-columns: 100%;
-        min-height: 100%;
-        margin: 0;
-        font-size: 1.5rem;
-        letter-spacing: 0.04rem;
-        line-height: calc(1 + 0.3 / var(--font-body-scale));
-        font-family: var(--font-body-family);
-        font-style: var(--font-body-style);
-        font-weight: var(--font-body-weight);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      @media screen and (min-width: 750px) {
-        body {
-          font-size: 1.6rem;
-        }
-      }
-
-      #loop-onstore {
-      z-index: 50!important;
-      }
-
-      #gorgias-chat-container {
-        z-index: 55!important;
-      }
-    {%- endstyle -%}
-
-    {{ 'base.css' | asset_url | stylesheet_tag }}
-
-    {%- unless settings.type_body_font.system? -%}
-      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
-    {%- endunless -%}
-    {%- unless settings.type_header_font.system? -%}
-      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
-    {%- endunless -%}
-
-    {%- if settings.predictive_search_enabled -%}
-      <link rel="stylesheet" href="{{ 'component-predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">
-    {%- endif -%}
-
-    <!-- Simprosys -->
-    {%- if settings.simprosys_enabled == true -%}
-      {% render 'gsf-conversion-pixels' %}
-    {%- endif -%}
-    <!-- Symprosys - End -->
-
-    <!-- Marker IO -->
-    {%- if settings.marker_io_enabled == true -%}
-      {% liquid
-        assign marker_io_project_key = settings.marker_io_live_project_key
-        if content_for_header contains 'previewBarInjector.init();' and settings.marker_io_preview_project_key != blank
-          assign marker_io_project_key = settings.marker_io_preview_project_key
-        endif
-      %}
-      {%- if marker_io_project_key != blank -%}
-        <script>
-          window.markerConfig = {
-            project: '{{ marker_io_project_key }}',
-            source: 'snippet',
-          };
-        </script>
-        <script>
-          !(function (e, r, a) {
-            if (!e.__Marker) {
-              e.__Marker = {};
-              var t = [],
-                n = { __cs: t };
-              [
-                'show',
-                'hide',
-                'isVisible',
-                'capture',
-                'cancelCapture',
-                'unload',
-                'reload',
-                'isExtensionInstalled',
-                'setReporter',
-                'setCustomData',
-                'on',
-                'off',
-              ].forEach(function (e) {
-                n[e] = function () {
-                  var r = Array.prototype.slice.call(arguments);
-                  r.unshift(e), t.push(r);
+        <!-- Wunderkind -->
+        {%- if settings.wunderkind_enabled == true -%}
+            <script type="lazyload_int">
+                (function (d) {
+                    var e = d.createElement('script');
+                    e.src = d.location.protocol + '//tag.wknd.ai/6272/i.js';
+                    e.async = true;
+                    d.getElementsByTagName('head')[0].appendChild(e);
+                })(document);
+            </script>
+            <script type="lazyload_int">
+                window.wunderkind = window.wunderkind  || {};
+                window.wunderkind.cart = {
+                    value: {{ cart.total_price | divided_by: 100 }},
+                    quantity: {{ cart.item_count }},
                 };
-              }),
-                (e.Marker = n);
-              var s = r.createElement('script');
-              (s.async = 1), (s.src = 'https://edge.marker.io/latest/shim.js');
-              var i = r.getElementsByTagName('script')[0];
-              i.parentNode.insertBefore(s, i);
-            }
-          })(window, document);
-        </script>
-      {%- else -%}
-        <!-- No Marker.IO Project Key found. -->
-      {%- endif -%}
-    {%- endif -%}
-    <!-- Marker IO - End -->
-
-    <!-- Klaviyo - Head -->
-    {% if settings.klaviyo_api_key != blank %}
-      <script src="https://a.klaviyo.com/media/js/onsite/onsite.js"></script>
-      <script>
-        var klaviyo = klaviyo || [];
-        klaviyo.init({
-          account: '{{ settings.klaviyo_api_key }}',
-          {%- if settings.klaviyo_restock_list != blank -%}
-            list: '{{ settings.klaviyo_restock_list }}',
-          {%- endif -%}
-          platform: 'shopify',
-        });
-        klaviyo.enable('backinstock', {
-          trigger: {
-            product_page_text: 'Email When Available',
-            product_page_class: 'button button--full-width button--primary',
-            product_page_text_align: 'center',
-            product_page_margin: '0px',
-            alternate_anchor: 'KlaviyoBISAnchor',
-            replace_anchor: false,
-          },
-          modal: {
-            headline: 'Email When Available',
-            body_content: 'Register to receive a notification when {product_name} comes back in stock.',
-            email_field_label: 'Enter your email',
-            button_label: 'Email me when available',
-            subscription_success_label: "You're in! We'll let you know when it's back in stock.",
-            footer_content: '',
-
-            additional_styles:
-              '#BISModal #container {padding: 15px 18px 15px 18px!important;} .klaviyo-bis-close { display: flex; align-items: center; justify-content: center; } .modal-title { text-transform: uppercase; letter-spacing: 0.1em; font-size: 16px; } .form-group .input-lg { font-size: 12px; padding: 10px 2px!important;} .btn-lg { border-radius: 0; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 300; font-size: 12px; padding: .9rem 3rem .9rem;} #completed_message {text-align: center;} #klaviyo-bis-modal #container {padding: 24px; border-radius: 0; margin-top: 0;} .form-group .input-lg {border-radius:0; box-shadow: none;} #klaviyo-bis-modal .close {font-weight:300;} .input-lg:focus-visible {outline: 1px solid black;} .form-group #email { padding: 10px 4px!important;}',
-            button_text_color: 'white',
-            button_background_color: 'black',
-
-            font_family: '"GerstnerProgramm", sans-serif',
-            headers_font_family: '"GerstnerProgramm", sans-serif',
-            subscribe_checked: true,
-          },
-        });
-      </script>
-    {% endif %}
-    <!-- Klaviyo - Head - End -->
-  
-  {% include 'friendbuy' %}
-
-<script type="text/javascript">
- var _conv_page_type = "{{ request.page_type }}";
- var _conv_category_id = "{{ collection.id }}";
- var _conv_category_name = "{{ collection.title }}";
- var _conv_product_sku = "{{ product.selected_or_first_available_variant.sku }}";
- var _conv_product_name = '{{ product.title }}';
- var _conv_product_price = "{{ product.price_min | money_without_currency }}";
- var _conv_customer_id = "{{ customer.id }}";
- var _conv_custom_v1 = "{{ product.tags.first }}";
- var _conv_custom_v2 = "{{ collection.current_type }}";
- var _conv_custom_v3 = "{{ cart.item_count }}";
- var _conv_custom_v4 = "{{ cart.total_price | money_without_currency }}";
-</script>
-{% render 'convert' %}
-
-</head>
-
-  <body>
-    {% if settings.gtm_body != blank -%}{{ settings.gtm_body }}{%- endif %}
-
-    <!-- Klarna -->
-    {% if settings.klarna_enabled == true %}
-      <script>
-        window.KlarnaThemeGlobals={};{%case template.name%} {%when"product"%} {% if product.first_available_variant.price %}window.KlarnaThemeGlobals.data_purchase_amount = {{ product.first_available_variant.price }};{% endif %}window.KlarnaThemeGlobals.productVariants={{product.variants|json}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%when"cart"%} window.KlarnaThemeGlobals.data_purchase_amount={{cart.total_price}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%endcase%}
-      </script>
-    {% endif %}
-    <!-- Klarna - End -->
-
-    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
-      {{ 'accessibility.skip_to_text' | t }}
-    </a>
-
-    {% comment %} {% section 'announcement-bar-dynamic' %}
-    {% section 'header' %}
-    {% section 'cart-drawer' %} {% endcomment %}
-    {% sections 'header-group' %}
-
-    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-      {{ content_for_layout }}
-    </main>
-
-    {% if settings.wishlist_popup_enabled %}
-      {% render 'modal-wishlist' %}
-    {% endif %}
-
-    {% section 'footer' %}
-
-    <ul hidden>
-      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
-    </ul>
-
-    <!-- Expose some Shopify variables -->
-    <script>
-      window.shopUrl = '{{ shop.url }}';
-      window.routes = {
-        cart_add_url: '{{ routes.cart_add_url }}',
-        cart_change_url: '{{ routes.cart_change_url }}',
-        cart_update_url: '{{ routes.cart_update_url }}',
-        predictive_search_url: '{{ routes.predictive_search_url }}',
-      };
-
-      window.cartStrings = {
-        error: `{{ 'sections.cart.cart_error' | t }}`,
-        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
-      };
-
-      window.variantStrings = {
-        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
-        soldOut: `{{ 'products.product.sold_out' | t }}`,
-        unavailable: `{{ 'products.product.unavailable' | t }}`,
-      };
-
-      window.accessibilityStrings = {
-        imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
-        shareSuccess: `{{ 'general.share.success_message' | t }}`,
-        pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
-        playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
-      };
-    </script>
-
-    {%- if settings.predictive_search_enabled -%}
-      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%}
-
-    <!-- Gorgias Chat Widget Start -->
-    {% if settings.gorgias_id != blank %}
-      <script
-        id="gorgias-chat-widget-install-v2"
-        src="https://config.gorgias.chat/gorgias-chat-bundle-loader.js?applicationId={{ settings.gorgias_id }}"
-        defer
-      ></script>
-      <script id="gorgias-chat-shopify-install">
-        !(function (_) {
-          (_.SHOPIFY_PERMANENT_DOMAIN = '{{shop.permanent_domain}}'),
-            (_.SHOPIFY_CUSTOMER_ID = '{{customer.id}}'),
-            (_.SHOPIFY_CUSTOMER_EMAIL = '{{customer.email}}');
-        })(window || {});
-      </script>
-    {% endif %}
-    <!-- Gorgias Chat Widget End -->
-
-    <!-- Swym Wishlist -->
-    {%- if settings.swym_wishlist_enabled == true -%}
-      {% include 'swymSnippet' %}
-      {% include 'swym-custom' %}
-      {% include 'swym-custom-pdp' %}
-      {% include 'swym-header-counter' %}
-      {% include 'swym-ajax-cart' %}
-      <script src="{{ 'wishlist-sfl-init.js' | asset_url }}" async></script>
-    {%- endif -%}
-    <!-- End - Swym Wishlist -->
-
-    <!-- Klaviyo - Body -->
-    {% if settings.klaviyo_api_key != blank %}
-      <script type="text/javascript">
-        var _learnq = _learnq || [];
-        _learnq.push(['account', '{{ settings.klaviyo_api_key }}']);
-        (function () {
-          var b = document.createElement('script');
-          b.type = 'text/javascript';
-          b.async = true;
-          b.src =
-            ('https:' == document.location.protocol ? 'https://' : 'http://') +
-            'a.klaviyo.com/media/js/analytics/analytics.js';
-          var a = document.getElementsByTagName('script')[0];
-          a.parentNode.insertBefore(b, a);
-        })();
-      </script>
-      {% if product %}
-        <script>
-          window.addEventListener('load', function () {
-            var _learnq = window._learnq || [];
-            function addedToCart() {
-              fetch(`${window.location.origin}/cart.js`).then((res) =>
-                res
-                  .clone()
-                  .json()
-                  .then((data) => {
-                    var cart = {
-                      total_price: data.total_price / 100,
-                      $value: data.total_price / 100,
-                      total_discount: data.total_discount,
-                      original_total_price: data.original_total_price / 100,
-                      items: data.items,
+                {% if customer -%}
+                    window.wunderkind.user = {
+                        email: '{{ customer.email }}',
                     };
-                    console.log('[K]: inside addedToCart, cart: ', cart);
-                    console.log('[K]: inside addedToCart, item: ', item);
-                    if (item !== 'undefined') {
-                      cart = Object.assign(cart, item);
-                    }
-                    if (klAjax) {
-                      _learnq.push(['track', 'Added to Cart', cart]);
-                      klAjax = false;
-                    }
-                  })
-              );
-            }
-            (function (ns, fetch) {
-              ns.fetch = function () {
-                const response = fetch.apply(this, arguments);
-                response.then((res) => {
-                  if (`${window.location.origin}/cart/add.js`.includes(res.url)) {
-                    addedToCart();
-                  }
+                {%- endif %}
+                document.addEventListener("cart:item-added", (e) => {
+                    window.wunderkind.cart.value = window.wunderkind.cart.value + (e.detail.finalPrice / 100);
+                    window.wunderkind.cart.quantity = window.wunderkind.cart.quantity + 1;
+                    console.log('[W]: Item added to cart: ', window.wunderkind)
                 });
-                return response;
-              };
-            })(window, window.fetch);
-            var klAjax = true;
-            var atcButtons = document.querySelectorAll("form[action*='/cart/add'] button[type='submit']");
-            for (var i = 0; i < atcButtons.length; i++) {
-              atcButtons[i].addEventListener('click', function () {
-                console.log('[K]: Add to cart button triggered!');
-                if (klAjax) {
-                  _learnq.push(['track', 'Added to Cart', item]);
-                  console.log('[K]: Item pushed:', item);
-                  klAjax = false;
+                document.addEventListener("cart:updated", (e) => {
+                    window.wunderkind.cart.value = e.detail.totalPrice / 100;
+                    window.wunderkind.cart.quantity = e.detail.itemCount;
+                    console.log('[W]: Cart updated: ', window.wunderkind)
+                });
+            </script>
+            {% if template.name == 'collection' -%}
+                {%- capture category_ids -%}
+                    {%- for product in collection.products -%} 
+                        '{{- product.id -}}'{%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                {%- endcapture %}
+                <script type="lazyload_int">                
+                    function getCollectionTitle () {
+                        {% comment %} This function is currently necessary because collections are created through filtering. {% endcomment %}
+                        const currentUrl = window.location.href;
+                        let collectionTitle = '';
+                        if (currentUrl.includes('/collections/accessories/')) {
+                            collectionTitle = currentUrl.replace('https://www.vitalydesign.com/collections/accessories/', '');
+                        } else {
+                            collectionTitle = '{{ collection.title }}';
+                        }
+                        return collectionTitle;
+                    };
+                    window.wunderkind = window.wunderkind  || {};
+                    window.wunderkind.category = {
+                        categoryIds: [{{ category_ids }}],
+                        title: `${ getCollectionTitle() }`,
+                    };
+                </script>
+            {%- elsif template.name == 'product' -%}
+                <script type="lazyload_int">
+                    window.wunderkind = window.wunderkind  || {};
+                    window.wunderkind.product = {
+                        id: '{{ product.id }}',
+                        sku: '{{ product.selected_or_first_available_variant.id }}',
+                        name: '{{ product.title }}',
+                        url: 'https://www.vitalydesign.com{{ product.url }}',
+                        imgUrl: 'https://www.vitalydesign.com/cdn/shop/{{ product.featured_image.src }}',
+                        price: {{ product.selected_or_first_available_variant.price | divided_by: 100 }},
+                        inStock: {{ product.selected_or_first_available_variant.available }},
+                        itemCategory: '{{ product.type }}',
+                    }
+                    document.addEventListener("variant:change", (e) => {
+                        window.wunderkind.product.sku = e.detail.currentVariant.id;
+                    });
+                </script>
+            {%- endif %}
+        {%- endif -%}
+        <!-- Wunderkind - End -->
+        {% if settings.gtm_head != blank -%}{{ settings.gtm_head | replace: '<script>' , '<script type="lazyload_int">' }}{%- endif %}
+        {%- if settings.google_optimize_id != blank and settings.google_optimize_enabled == true -%}
+            <script type="lazyload_int" data-src="https://www.googleoptimize.com/optimize.js?id={{ settings.google_optimize_id }}"></script>
+        {%- endif -%}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="theme-color" content="">
+        <link rel="canonical" href="{{ canonical_url }}">
+        <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+        <meta name="format-detection" content="telephone=no">
+        {%- if settings.favicon != blank -%}
+            <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+        {%- endif -%}
+        {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+            <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+        {%- endunless -%}
+        <title>
+            {{ page_title }}
+            {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+            {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+            {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+        </title>
+        <!-- Location Redirect -->
+        {% if settings.redirect_use %}
+            {% unless template contains 'article'
+                or template contains 'customer'
+                or template.suffix contains 'glyph'
+                or template contains 'tiktok'
+                or template.suffix contains 'giveaway'
+                or template.suffix contains '700'
+                or template.suffix contains 'sign'
+                or template.suffix contains 'rebrand'
+                or page.url contains 'assets'
+                or page.url contains 'futurefund'
+                or page.url contains 'unhcr'
+                or page.url contains 'retail'
+                or page.url contains 'subscribe'
+                or content_for_header contains 'previewBarInjector.init();'
+            %}
+                {{ 'redirect-no-jquery.js' | asset_url | script_tag }}
+                <script>
+                    IPRedirect.init({{ settings | json }});
+                    IPRedirect.run();
+                </script>
+            {% endunless %}
+        {% endif %}
+        <!-- Location Redirect - End -->
+        {% if page_description %}
+            <meta name="description" content="{{ page_description | escape }}">
+        {% endif %}
+        {% render 'meta-tags' %}
+        <!-- Ship Scout - Start -->
+        <script type="lazyload_int">
+            window._shipScout = window._shipScout || [];
+            _shipScout.push(function(response) {
+                console.log('Ship Scout response: ', response);
+                //apply any exchange rates to currency if necessary
+                const thresholdCents = (window.Shopify && Shopify.currency && Shopify.currency.rate) ? response.freeShippingThresholdCents * Shopify.currency.rate : response.freeShippingThresholdCents;
+                const flatrateCents = (window.Shopify && Shopify.currency && Shopify.currency.rate) ? response.shippingPriceCents * Shopify.currency.rate : response.shippingPriceCents;
+                //format currency
+                const currencyFormat = ShipScoutGetCurrency();                
+                //get threshold amount with currency symbol
+                const thresholdAmount = ShipScoutFormatMoney(thresholdCents, currencyFormat);
+                //get flat rate amount with currency symbol
+                const flatrateAmount = ShipScoutFormatMoney(flatrateCents, currencyFormat);
+                {% comment %} window.shipScoutTestObject = {
+                    title: 'Free Express Shipping',
+                    threshold: 200,
+                    messageText: 'Free Express Shipping',
+                } {% endcomment %}
+                window.shipScoutTestObject = {
+                    title: 'Free Shipping',
+                    threshold: Math.floor(thresholdCents / 100),
+                    messageText: 'Free Shipping',
+                } 
+                const progressBar = document.querySelector('progress-bar');
+                if (progressBar != null) { 
+                    console.log('progressBar exists... rerendering progress bar...')
+                    progressBar.init(); 
                 }
-              });
-            }
-          });
+                // Finds all elements with the attribute data-ship-scout-amount and updates the text to the threshold amount
+                const shipScoutAmounts = document.querySelectorAll('[data-ship-scout-amount]');
+                shipScoutAmounts.forEach( amount => {
+                    amount.textContent = thresholdAmount;
+                });                
+                // Finds all Ship Scout Announcements and displays them. 
+                const shipScoutAnnouncements = document.querySelectorAll('[data-ship-scout-announcement]');
+                shipScoutAnnouncements.forEach( announcement => {
+                    announcement.style.display = 'flex';
+                });
+                // Finds all Ship Scout Benefits and displays them. 
+                const shipScoutBenefits = document.querySelectorAll('[data-ship-scout-benefit]');
+                shipScoutBenefits.forEach( benefit => {
+                    benefit.style.display = 'block';
+                });
+            });
         </script>
-      {% endif %}
-    {% endif %}
-    <!-- Klaviyo - Body - End -->
-
-    <script type="text/javascript" async="true" src="https://scripts.juniphq.com/v1/junip_shopify.js"></script>
-    <span class="junip-store-key" data-store-key="{{shop.metafields.junip.store_key}}"></span>
-
-    <!-- Loop -->
-    {% if settings.loop_key != blank %}
-      <script src="https://unpkg.com/@loophq/onstore-sdk@latest/dist/loop-onstore-sdk.js"></script>
-      <script>
-        LoopOnstore.init({
-          key: '{{ settings.loop_key }}',
-          attach: '#checkout',
-        });
-      </script>
-    {% endif %}
-    <!-- Loop - End -->
-  </body>
+        <!-- Ship Scout - End -->
+        <script type="lazyload_int" data-src="{{ 'global.js' | asset_url }}"></script>
+        {%- if request.design_mode or template contains 'cart' or template contains 'checkout' -%}
+            {{ content_for_header }}
+        {%- else -%}
+            {% capture content_for_header2 %}{{ content_for_header }}{% endcapture %}
+            {{ content_for_header2 | replace: ' defer="defer" ', ' type="lazyload_int" ' | replace: " src=", " data-src="| replace: "DOMContentLoaded", "w3-DOMContentLoaded" | replace: "window.addEventListener('load', asyncLoad, false);", "window.addEventListener('w3-DOMContentLoaded', asyncLoad, false);" | replace: "addEventListener('load', prefetchAssets);", "addEventListener('w3-DOMContentLoaded', prefetchAssets);" }}
+            <script>var trekkie=[];trekkie.integrations=!0;window.BOOMR={},window.BOOMR.version=true;</script>
+        {%- endif -%}
+        {%- liquid
+            assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+            assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+            assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+        %}
+        {%- unless settings.type_body_font.system? -%}
+            <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+        {%- endunless -%}
+        {%- unless settings.type_header_font.system? -%}
+            <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+        {%- endunless -%}
+        <link rel="preload" as="font" href="https://cdn.shopify.com/s/files/1/0161/1184/files/Gerstner-ProgrammRegular.woff?v=1646082077" type="font/woff" crossorigin>
+        {%- style -%}
+            @font-face {
+                font-family: "GerstnerProgramm";
+                src: url("https://cdn.shopify.com/s/files/1/0161/1184/files/Gerstner-ProgrammRegular.woff?v=1646082077") format("woff");
+                display:swap;
+            }
+            {{ settings.type_body_font | font_face: font_display: 'swap' }}
+            {{ body_font_bold | font_face: font_display: 'swap' }}
+            {{ body_font_italic | font_face: font_display: 'swap' }}
+            {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+            {{ settings.type_header_font | font_face: font_display: 'swap' }}
+            :root {
+                --font-body-family: "GerstnerProgramm";
+                --font-body-style: {{ settings.type_body_font.style }};
+                --font-body-weight: {{ settings.type_body_font.weight }};
+                --font-heading-family: "GerstnerProgramm";
+                --font-heading-style: {{ settings.type_header_font.style }};
+                --font-heading-weight: {{ settings.type_header_font.weight }};
+                --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+                --font-heading-scale: {{ settings.heading_scale | times: 1.0 | divided_by: settings.body_scale }};
+                --color-base-text: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
+                --color-base-background-1: {{ settings.colors_background_1.red }}, {{ settings.colors_background_1.green }}, {{ settings.colors_background_1.blue }};
+                --color-base-background-2: {{ settings.colors_background_2.red }}, {{ settings.colors_background_2.green }}, {{ settings.colors_background_2.blue }};
+                --color-base-solid-button-labels: {{ settings.colors_solid_button_labels.red }}, {{ settings.colors_solid_button_labels.green }}, {{ settings.colors_solid_button_labels.blue }};
+                --color-base-outline-button-labels: {{ settings.colors_outline_button_labels.red }}, {{ settings.colors_outline_button_labels.green }}, {{ settings.colors_outline_button_labels.blue }};
+                --color-base-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
+                --color-base-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
+                --payment-terms-background-color: {{ settings.colors_background_1 }};
+                --color-sale-price: {{ settings.sale_price_color }};
+                --gradient-base-background-1: {% if settings.gradient_background_1 != blank %}{{ settings.gradient_background_1 }}{% else %}{{ settings.colors_background_1 }}{% endif %};
+                --gradient-base-background-2: {% if settings.gradient_background_2 != blank %}{{ settings.gradient_background_2 }}{% else %}{{ settings.colors_background_2 }}{% endif %};
+                --gradient-base-accent-1: {% if settings.gradient_accent_1 != blank %}{{ settings.gradient_accent_1 }}{% else %}{{ settings.colors_accent_1 }}{% endif %};
+                --gradient-base-accent-2: {% if settings.gradient_accent_2 != blank %}{{ settings.gradient_accent_2 }}{% else %}{{ settings.colors_accent_2 }}{% endif %};
+                --page-width: {{ settings.page_width | divided_by: 10 }}rem;
+                --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
+                {%- if settings.swym_wishlist_enabled == true -%}
+                    /* Swym */
+                    --swym-wishlist-fill-color: {{ settings.swym_wishlist_fill_color }};
+                    --swym-wishlist-stroke-color: {{ settings.swym_wishlist_stroke_color }};
+                    --swym-wishlist-header-text-color: {{ settings.swym_wishlist_header_text_color }};
+                    --swym-wishlist-card-heart-stroke-color: {{ settings.swym_wishlist_card_heart_stroke_color }};
+                    --swym-wishlist-card-heart-fill-color: {{ settings.swym_wishlist_card_heart_fill_color}};
+                    --swym-wishlist-pdp-heart-stroke-color: {{ settings.swym_wishlist_pdp_heart_stroke_color }};
+                    --swym-wishlist-pdp-heart-fill-color: {{ settings.swym_wishlist_pdp_heart_fill_color}};
+                {%- endif -%}
+                --badge-corner-radius: {{ settings.badge_corner_radius | divided_by: 10.0 }}rem;
+                --badge-low-stock-background-color: {{ settings.badge_low_stock_background_color }};
+                --badge-low-stock-text-color: {{ settings.badge_low_stock_text_color }};
+                --badge-low-stock-border-color: {{ settings.badge_low_stock_border_color }};
+                --badge-sold-out-background-color: {{ settings.badge_sold_out_background_color }};
+                --badge-sold-out-text-color: {{ settings.badge_sold_out_text_color }};
+                --badge-sold-out-border-color: {{ settings.badge_sold_out_border_color }};
+                --badge-sale-background-color: {{ settings.badge_sale_background_color }};
+                --badge-sale-text-color: {{ settings.badge_sale_text_color }};
+                --badge-sale-border-color: {{ settings.badge_sale_border_color }};
+                --badge-new-background-color: {{ settings.badge_new_background_color }};
+                --badge-new-text-color: {{ settings.badge_new_text_color }};
+                --badge-new-border-color: {{ settings.badge_new_border_color }};
+                --badge-bestseller-background-color: {{ settings.badge_bestseller_background_color }};
+                --badge-bestseller-text-color: {{ settings.badge_bestseller_text_color }};
+                --badge-bestseller-border-color: {{ settings.badge_bestseller_border_color }};
+                --badge-collaboration-background-color: {{ settings.badge_collaboration_background_color }};
+                --badge-collaboration-text-color: {{ settings.badge_collaboration_text_color }};
+                --badge-collaboration-border-color: {{ settings.badge_collaboration_border_color }};
+            }
+            *,
+            *::before,
+            *::after {
+                box-sizing: inherit;
+            }
+            html {
+                box-sizing: border-box;
+                font-size: calc(var(--font-body-scale) * 62.5%);
+                height: 100%;
+            }
+            body {
+                display: grid;
+                grid-template-rows: auto auto 1fr auto;
+                grid-template-columns: 100%;
+                min-height: 100%;
+                margin: 0;
+                font-size: 1.5rem;
+                letter-spacing: 0.04rem;
+                line-height: calc(1 + 0.3 / var(--font-body-scale));
+                font-family: var(--font-body-family);
+                font-style: var(--font-body-style);
+                font-weight: var(--font-body-weight);
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            @media screen and (min-width: 750px) {
+                body {
+                    font-size: 1.6rem;
+                }
+            }
+            #loop-onstore {
+                z-index: 50!important;
+            }
+            #gorgias-chat-container {
+                z-index: 55!important;
+            }
+        {%- endstyle -%}
+        {% if template contains 'index' %} 
+            {% render 'homepage-critical-css' %}
+        {% elsif template contains 'collection' %}
+            {% render 'collection-critical-css' %}
+        {% elsif template contains 'product' %}
+            {% render 'product-critical-css' %}
+        {% else %}
+            {% render 'all-css' %}
+        {% endif %}
+        <link rel="stylesheet" data-href="{{ 'base.css' | asset_url }}">
+        {%- if settings.predictive_search_enabled -%}
+            <link rel="stylesheet" data-href="{{ 'component-predictive-search.css' | asset_url }}">
+        {%- endif -%}
+        <!-- Simprosys -->
+        {%- if settings.simprosys_enabled == true -%}
+            {% render 'gsf-conversion-pixels' %}
+        {%- endif -%}
+        <!-- Symprosys - End -->
+        <!-- Marker IO -->
+        {%- if settings.marker_io_enabled == true -%}
+            {% liquid
+                assign marker_io_project_key = settings.marker_io_live_project_key
+                if content_for_header contains 'previewBarInjector.init();' and settings.marker_io_preview_project_key != blank
+                assign marker_io_project_key = settings.marker_io_preview_project_key
+                endif
+            %}
+            {%- if marker_io_project_key != blank -%}
+                <script type="lazyload_int">
+                    window.markerConfig = {
+                        project: '{{ marker_io_project_key }}',
+                        source: 'snippet',
+                    };
+                </script>
+                <script type="lazyload_int">
+                    !(function (e, r, a) {
+                        if (!e.__Marker) {
+                            e.__Marker = {};
+                            var t = [],
+                                n = { __cs: t };
+                            [
+                                'show',
+                                'hide',
+                                'isVisible',
+                                'capture',
+                                'cancelCapture',
+                                'unload',
+                                'reload',
+                                'isExtensionInstalled',
+                                'setReporter',
+                                'setCustomData',
+                                'on',
+                                'off',
+                            ].forEach(function (e) {
+                                n[e] = function () {
+                                    var r = Array.prototype.slice.call(arguments);
+                                    r.unshift(e), t.push(r);
+                                };
+                            }),
+                            (e.Marker = n);
+                            var s = r.createElement('script');
+                            (s.async = 1), (s.src = 'https://edge.marker.io/latest/shim.js');
+                            var i = r.getElementsByTagName('script')[0];
+                            i.parentNode.insertBefore(s, i);
+                        }
+                    })(window, document);
+                </script>
+            {%- else -%}
+                <!-- No Marker.IO Project Key found. -->
+            {%- endif -%}
+        {%- endif -%}
+        <!-- Marker IO - End -->
+        <!-- Klaviyo - Head -->
+        {% if settings.klaviyo_api_key != blank %}
+            <script type="lazyload_int" data-src="https://a.klaviyo.com/media/js/onsite/onsite.js"></script>
+            <script type="lazyload_int">
+                var klaviyo = klaviyo || [];
+                klaviyo.init({
+                    account: '{{ settings.klaviyo_api_key }}',
+                    {%- if settings.klaviyo_restock_list != blank -%}
+                        list: '{{ settings.klaviyo_restock_list }}',
+                    {%- endif -%}
+                    platform: 'shopify',
+                });
+                klaviyo.enable('backinstock', {
+                    trigger: {
+                        product_page_text: 'Email When Available',
+                        product_page_class: 'button button--full-width button--primary',
+                        product_page_text_align: 'center',
+                        product_page_margin: '0px',
+                        alternate_anchor: 'KlaviyoBISAnchor',
+                        replace_anchor: false,
+                    },
+                    modal: {
+                        headline: 'Email When Available',
+                        body_content: 'Register to receive a notification when {product_name} comes back in stock.',
+                        email_field_label: 'Enter your email',
+                        button_label: 'Email me when available',
+                        subscription_success_label: "You're in! We'll let you know when it's back in stock.",
+                        footer_content: '',
+                        additional_styles:
+                        '#BISModal #container {padding: 15px 18px 15px 18px!important;} .klaviyo-bis-close { display: flex; align-items: center; justify-content: center; } .modal-title { text-transform: uppercase; letter-spacing: 0.1em; font-size: 16px; } .form-group .input-lg { font-size: 12px; padding: 10px 2px!important;} .btn-lg { border-radius: 0; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 300; font-size: 12px; padding: .9rem 3rem .9rem;} #completed_message {text-align: center;} #klaviyo-bis-modal #container {padding: 24px; border-radius: 0; margin-top: 0;} .form-group .input-lg {border-radius:0; box-shadow: none;} #klaviyo-bis-modal .close {font-weight:300;} .input-lg:focus-visible {outline: 1px solid black;} .form-group #email { padding: 10px 4px!important;}',
+                        button_text_color: 'white',
+                        button_background_color: 'black',
+                        font_family: '"GerstnerProgramm", sans-serif',
+                        headers_font_family: '"GerstnerProgramm", sans-serif',
+                        subscribe_checked: true,
+                    },
+                });
+            </script>
+        {% endif %}
+        <!-- Klaviyo - Head - End -->
+        {% include 'friendbuy' %}
+        <script type="lazyload_int">
+            var _conv_page_type = "{{ request.page_type }}";
+            var _conv_category_id = "{{ collection.id }}";
+            var _conv_category_name = "{{ collection.title }}";
+            var _conv_product_sku = "{{ product.selected_or_first_available_variant.sku }}";
+            var _conv_product_name = '{{ product.title }}';
+            var _conv_product_price = "{{ product.price_min | money_without_currency }}";
+            var _conv_customer_id = "{{ customer.id }}";
+            var _conv_custom_v1 = "{{ product.tags.first }}";
+            var _conv_custom_v2 = "{{ collection.current_type }}";
+            var _conv_custom_v3 = "{{ cart.item_count }}";
+            var _conv_custom_v4 = "{{ cart.total_price | money_without_currency }}";
+        </script>
+        {% render 'convert' %}
+        {% render 'app-block' %}
+        {% render 'custom-css' %}
+        <script type="lazyload_int" data-src="https://www.googletagmanager.com/gtag/js?id=UA-64140900-1"></script>
+        <script type="lazyload_int">
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-64140900-1');
+        </script>        
+    </head>
+    <body>
+        {% if settings.gtm_body != blank -%}{{ settings.gtm_body }}{%- endif %}
+        <!-- Klarna -->
+        {% if settings.klarna_enabled == true %}
+            <script>
+                window.KlarnaThemeGlobals={};{%case template.name%} {%when"product"%} {% if product.first_available_variant.price %}window.KlarnaThemeGlobals.data_purchase_amount = {{ product.first_available_variant.price }};{% endif %}window.KlarnaThemeGlobals.productVariants={{product.variants|json}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%when"cart"%} window.KlarnaThemeGlobals.data_purchase_amount={{cart.total_price}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%endcase%}
+            </script>
+        {% endif %}
+        <!-- Klarna - End -->
+        <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+            {{ 'accessibility.skip_to_text' | t }}
+        </a>
+        {% comment %} {% section 'announcement-bar-dynamic' %}
+        {% section 'header' %}
+        {% section 'cart-drawer' %} {% endcomment %}
+        {% sections 'header-group' %}
+        <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+            {{ content_for_layout }}
+        </main>
+        {% if settings.wishlist_popup_enabled %}
+            {% render 'modal-wishlist' %}
+        {% endif %}
+        {% section 'footer' %}
+        <ul hidden>
+            <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+        </ul>
+        <!-- Expose some Shopify variables -->
+        <script>
+            window.shopUrl = '{{ shop.url }}';
+            window.routes = {
+                cart_add_url: '{{ routes.cart_add_url }}',
+                cart_change_url: '{{ routes.cart_change_url }}',
+                cart_update_url: '{{ routes.cart_update_url }}',
+                predictive_search_url: '{{ routes.predictive_search_url }}',
+            };
+            window.cartStrings = {
+                error: `{{ 'sections.cart.cart_error' | t }}`,
+                quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
+            };
+            window.variantStrings = {
+                addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+                soldOut: `{{ 'products.product.sold_out' | t }}`,
+                unavailable: `{{ 'products.product.unavailable' | t }}`,
+            };
+            window.accessibilityStrings = {
+                imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
+                shareSuccess: `{{ 'general.share.success_message' | t }}`,
+                pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
+                playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
+            };
+        </script>
+        <script type="lazyload_int" data-src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script>
+        {%- if settings.predictive_search_enabled -%}
+            <script type="lazyload_int" data-src="{{ 'predictive-search.js' | asset_url }}"></script>
+        {%- endif -%}
+        <!-- Gorgias Chat Widget Start -->
+        {% if settings.gorgias_id != blank %}
+            <script id="gorgias-chat-widget-install-v2" type="lazyload_int" data-src="https://config.gorgias.chat/gorgias-chat-bundle-loader.js?applicationId={{ settings.gorgias_id }}"></script>
+            <script id="gorgias-chat-shopify-install" type="lazyload_int">
+                !(function (_) {
+                    (_.SHOPIFY_PERMANENT_DOMAIN = '{{shop.permanent_domain}}'),
+                    (_.SHOPIFY_CUSTOMER_ID = '{{customer.id}}'),
+                    (_.SHOPIFY_CUSTOMER_EMAIL = '{{customer.email}}');
+                })(window || {});
+            </script>
+        {% endif %}
+        <!-- Gorgias Chat Widget End -->
+        <!-- Swym Wishlist -->
+        {%- if settings.swym_wishlist_enabled == true -%}
+            {% include 'swymSnippet' %}
+            {% include 'swym-custom' %}
+            {% include 'swym-custom-pdp' %}
+            {% include 'swym-header-counter' %}
+            {% include 'swym-ajax-cart' %}
+            <script type="lazyload_int" data-src="{{ 'wishlist-sfl-init.js' | asset_url }}"></script>
+        {%- endif -%}
+        <!-- End - Swym Wishlist -->
+        <!-- Klaviyo - Body -->
+        {% if settings.klaviyo_api_key != blank %}
+            <script type="lazyload_int">
+                var _learnq = _learnq || [];
+                _learnq.push(['account', '{{ settings.klaviyo_api_key }}']);
+                (function () {
+                    var b = document.createElement('script');
+                    b.type = 'text/javascript';
+                    b.async = true;
+                    b.src =
+                    ('https:' == document.location.protocol ? 'https://' : 'http://') +
+                    'a.klaviyo.com/media/js/analytics/analytics.js';
+                    var a = document.getElementsByTagName('script')[0];
+                    a.parentNode.insertBefore(b, a);
+                })();
+            </script>
+            {% if product %}
+                <script type="lazyload_int">
+                    window.addEventListener('load', function () {
+                        var _learnq = window._learnq || [];
+                        function addedToCart() {
+                        fetch(`${window.location.origin}/cart.js`).then((res) =>
+                            res
+                            .clone()
+                            .json()
+                            .then((data) => {
+                                var cart = {
+                                total_price: data.total_price / 100,
+                                $value: data.total_price / 100,
+                                total_discount: data.total_discount,
+                                original_total_price: data.original_total_price / 100,
+                                items: data.items,
+                                };
+                                console.log('[K]: inside addedToCart, cart: ', cart);
+                                console.log('[K]: inside addedToCart, item: ', item);
+                                if (item !== 'undefined') {
+                                cart = Object.assign(cart, item);
+                                }
+                                if (klAjax) {
+                                _learnq.push(['track', 'Added to Cart', cart]);
+                                klAjax = false;
+                                }
+                            })
+                        );
+                        }
+                        (function (ns, fetch) {
+                        ns.fetch = function () {
+                            const response = fetch.apply(this, arguments);
+                            response.then((res) => {
+                            if (`${window.location.origin}/cart/add.js`.includes(res.url)) {
+                                addedToCart();
+                            }
+                            });
+                            return response;
+                        };
+                        })(window, window.fetch);
+                        var klAjax = true;
+                        var atcButtons = document.querySelectorAll("form[action*='/cart/add'] button[type='submit']");
+                        for (var i = 0; i < atcButtons.length; i++) {
+                        atcButtons[i].addEventListener('click', function () {
+                            console.log('[K]: Add to cart button triggered!');
+                            if (klAjax) {
+                            _learnq.push(['track', 'Added to Cart', item]);
+                            console.log('[K]: Item pushed:', item);
+                            klAjax = false;
+                            }
+                        });
+                        }
+                    });
+                </script>
+            {% endif %}
+        {% endif %}
+        <!-- Klaviyo - Body - End -->
+        <script type="lazyload_int" data-src="https://scripts.juniphq.com/v1/junip_shopify.js"></script>
+        <span class="junip-store-key" data-store-key="{{shop.metafields.junip.store_key}}"></span>
+        <!-- Loop -->
+        {% if settings.loop_key != blank %}
+            <script type="lazyload_int" data-src="https://unpkg.com/@loophq/onstore-sdk@latest/dist/loop-onstore-sdk.js"></script>
+            <script type="lazyload_int">
+                LoopOnstore.init({
+                    key: '{{ settings.loop_key }}',
+                    attach: '#checkout',
+                });
+            </script>
+        {% endif %}
+        <!-- Loop - End -->
+        {% render 'footer-app-block' %}
+        {% render 'wnw_footer' %}
+    </body>
 </html>
